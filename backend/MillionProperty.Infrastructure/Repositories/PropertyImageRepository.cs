@@ -1,3 +1,5 @@
+namespace MillionProperty.Infrastructure.Repositories;
+
 public class PropertyImageRepository : IPropertyImageRepository
 {
     private readonly IMongoCollection<PropertyImage> _propertyImagesCollection;

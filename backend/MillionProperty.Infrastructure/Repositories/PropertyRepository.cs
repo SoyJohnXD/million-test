@@ -1,3 +1,5 @@
+namespace MillionProperty.Infrastructure.Repositories;
+
 public class PropertyRepository : IPropertyRepository
 {
     private readonly IMongoCollection<Property> _propertiesCollection;
@@ -9,8 +11,7 @@ public class PropertyRepository : IPropertyRepository
         _propertiesCollection = mongoDatabase.GetCollection<Property>("Properties");
     }
 
-    public async Task<IEnumerable<Property>> GetByFiltersAsync(string? name, string? address, decimal? minPrice, decimal? maxPrice)
-    {
+   public async Task<IEnumerable<Property>> GetByFiltersAsync(string? name, string? address, decimal? minPrice, decimal? maxPrice)    {
         var filterBuilder = Builders<Property>.Filter;
         var filter = filterBuilder.Empty;
 
@@ -31,7 +32,7 @@ public class PropertyRepository : IPropertyRepository
 
         if (maxPrice.HasValue)
         {
-            filter &= filterBuilder.Lte(p => p.Price, maxPrice.Value); 
+            filter &= filterBuilder.Lte(p => p.Price, maxPrice.Value);
         }
 
         return await _propertiesCollection.Find(filter).ToListAsync();
