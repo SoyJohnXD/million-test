@@ -1,13 +1,13 @@
-﻿namespace MillionProperty.Domain;
+﻿namespace MillionProperty.Domain.Entities;
 
 public class Owner
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string IdOwner { get; set; }
+    public string IdOwner { get; set; } = string.Empty; 
 
-    public string Name { get; set; }
-    public string Address { get; set; }
-    public string Photo { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Address { get; set; } = string.Empty;
+    public string Photo { get; set; } = string.Empty;
     public DateTime Birthday { get; set; }
 }
