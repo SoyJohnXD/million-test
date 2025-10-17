@@ -1,0 +1,65 @@
+.idea/
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ####################
+# ## Backend - .NET
+# ####################
+# Directorios de compilación
+[Bb]in/
+[Oo]bj/
+
+# Archivos de usuario de Visual Studio
+*.vs/
+*.*.user
+*.suo
+
+# Archivos de compilación de Rider
+.idea/
+*.sln.iml
+
+# Archivos generados por builds
+*.exe
+*.dll
+*.pdb
+*.nupkg
+*.snk
+
+# Archivos de configuración local (no deben ir al repo)
+appsettings.Development.json
+
+# ####################
+# ## Frontend - Next.js / Node.js
+# ####################
+# Dependencias
+node_modules/
+.pnp
+.pnp.js
+
+# Directorio de build de Next.js
+.next/
+out/
+
+# Archivos de configuración local y secretos
+.env.local
+.env.*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ####################
+# ## Docker
+# ####################
+# Archivos generados por Docker Compose
+docker-compose.override.yml
