@@ -11,7 +11,14 @@ public class PropertyRepository : IPropertyRepository
         _propertiesCollection = mongoDatabase.GetCollection<Property>("Properties");
     }
 
-   public async Task<IEnumerable<Property>> GetByFiltersAsync(string? name, string? address, decimal? minPrice, decimal? maxPrice)    {
+    public async Task<(IEnumerable<Property> Properties, int TotalCount)> GetByFiltersAsync(
+        string? name, 
+        string? address, 
+        decimal? minPrice, 
+        decimal? maxPrice, 
+        int pageNumber, 
+        int pageSize)
+    {
         var filterBuilder = Builders<Property>.Filter;
         var filter = filterBuilder.Empty;
 
@@ -35,6 +42,25 @@ public class PropertyRepository : IPropertyRepository
             filter &= filterBuilder.Lte(p => p.Price, maxPrice.Value);
         }
 
-        return await _propertiesCollection.Find(filter).ToListAsync();
+        var totalCountTask = _propertiesCollection.CountDocumentsAsync(filter);
+
+        var propertiesTask = _propertiesCollection.Find(filter)
+            .Skip((pageNumber - 1) * pageSize)
+            .Limit(pageSize)
+            .ToListAsync();
+
+        await Task.WhenAll(totalCountTask, propertiesTask);
+
+        var totalCount = (int)await totalCountTask;
+        var properties = await propertiesTask;
+
+        return (properties, totalCount);
     }
+    public async Task<Property?> GetByIdAsync(string id)
+    {
+        var filter = Builders<Property>.Filter.Eq(p => p.IdProperty, id);
+        return await _propertiesCollection.Find(filter).FirstOrDefaultAsync();
+    }
+
+ 
 }

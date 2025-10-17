@@ -18,4 +18,9 @@ public class PropertyImageRepository : IPropertyImageRepository
 
         return await _propertyImagesCollection.Find(filter).FirstOrDefaultAsync();
     }
+
+    public async Task<IEnumerable<PropertyImage>> GetAllByPropertyIdAsync(string idProperty)
+    {
+        return await _propertyImagesCollection.Find(p => p.IdProperty == idProperty).ToListAsync();
+    }
 }

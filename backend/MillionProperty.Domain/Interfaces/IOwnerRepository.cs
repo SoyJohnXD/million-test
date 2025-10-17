@@ -1,7 +1,8 @@
 using MillionProperty.Domain.Entities;
+
 namespace MillionProperty.Domain.Interfaces;
-public interface IOwnerPropertyRepository
+public interface IOwnerRepository
 {
-    Task<Owner> GetByIdAsync(string idOwner);
-    Task AddAsync(Owner owner);
+    Task<IEnumerable<Owner>> GetByIdsAsync(IEnumerable<string> ownerIds);
+    Task<Owner?> GetByIdAsync(string idOwner);
 }

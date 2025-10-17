@@ -1,13 +1,53 @@
+using MillionProperty.API.Middleware;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddFluentValidationAutoValidation();
+
+builder.Services.AddValidatorsFromAssemblyContaining<GetFilteredPropertiesQueryValidator>();
+
+builder.Services.Configure<MongoDbSettings>(
+    builder.Configuration.GetSection("MongoDbSettings"));
+
+
+builder.Services.AddSingleton<IPropertyRepository>(sp =>
+{
+    var settings = sp.GetRequiredService<IOptions<MongoDbSettings>>();
+    return new PropertyRepository(settings);
+});
+
+builder.Services.AddSingleton<IPropertyImageRepository>(sp =>
+{
+    var settings = sp.GetRequiredService<IOptions<MongoDbSettings>>();
+    return new PropertyImageRepository(settings);
+});
+
+builder.Services.AddSingleton<IOwnerRepository>(sp =>
+{
+    var settings = sp.GetRequiredService<IOptions<MongoDbSettings>>();
+    return new OwnerRepository(settings);
+});
+
+builder.Services.AddSingleton<IPropertyTraceRepository>(sp =>
+{
+    var settings = sp.GetRequiredService<IOptions<MongoDbSettings>>();
+    return new PropertyTraceRepository(settings);
+});
+
+
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(MappingProfile).Assembly));
+
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+app.UseMiddleware<GlobalExceptionHandler>();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -15,30 +55,16 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthorization();
+app.MapControllers();
 
-var summaries = new[]
+if (app.Environment.IsDevelopment())
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast")
-.WithOpenApi();
+    using var scope = app.Services.CreateScope();
+    var settings = scope.ServiceProvider.GetRequiredService<IOptions<MongoDbSettings>>().Value;
+    var client = new MongoClient(settings.ConnectionString);
+    var database = client.GetDatabase(settings.DatabaseName);
+    await MongoDbSeeder.SeedDataAsync(database);
+}
 
 app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
