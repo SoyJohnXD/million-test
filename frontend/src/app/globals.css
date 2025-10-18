@@ -3,7 +3,6 @@
 @import 'tailwindcss';
 
 @theme {
-  /* Base */
   --color-primary: #5f6542;
   --color-secondary: #1b1b1b;
   --color-accent: #b0b29e;

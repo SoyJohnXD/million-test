@@ -7,14 +7,14 @@ import { ThemeProvider } from '@/context/ThemeContext';
 
 const inter = Inter({
   subsets: ['latin'],
-  variable: '--font-inter', // Variable CSS para usar en Tailwind/CSS
-  display: 'swap', // Mejora el rendimiento de carga de fuentes
+  variable: '--font-inter',
+  display: 'swap',
 });
 
 const prata = Prata({
   subsets: ['latin'],
-  weight: '400', // Prata generalmente solo tiene peso 400
-  variable: '--font-prata', // Variable CSS
+  weight: '400',
+  variable: '--font-prata',
   display: 'swap',
 });
 
