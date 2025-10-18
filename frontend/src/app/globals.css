@@ -1,26 +1,62 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@import 'tailwindcss';
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@theme {
+  /* Base */
+  --color-primary: #5f6542;
+  --color-secondary: #1b1b1b;
+  --color-accent: #b0b29e;
+  --color-surface: #ffffff;
+  --color-background: #f1f1ec;
+  --color-border: #d0d0c7;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-prata);
+
+  --border-radius: 0.6rem;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  --dark-color-primary: #aab295;
+  --dark-color-secondary: #e4e4de;
+  --dark-color-accent: #3a3a3a;
+  --dark-color-surface: #2a2a2a;
+  --dark-color-background: #171717;
+  --dark-color-border: #3b3b3b;
+  --dark-shadow-md:
+    0 4px 6px -1px rgb(0 0 0 / 0.35), 0 2px 4px -2px rgb(0 0 0 / 0.25);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  @apply bg-background text-secondary font-sans antialiased;
+}
+
+.font-heading {
+  font-family: theme('fontFamily.serif');
+}
+
+.dark body {
+  background-color: var(--dark-color-background);
+  color: var(--dark-color-secondary);
+}
+.dark {
+  --color-primary: var(--dark-color-primary);
+  --color-secondary: var(--dark-color-secondary);
+  --color-accent: var(--dark-color-accent);
+  --color-surface: var(--dark-color-surface);
+  --color-background: var(--dark-color-background);
+  --color-border: var(--dark-color-border);
+  --shadow-md: var(--dark-shadow-md);
+}
+
+body {
+  background: theme('colors.background');
+  color: theme('colors.secondary');
+  font-family: theme('fontFamily.sans');
+  @apply antialiased;
+}
+
+.font-heading {
+  font-family: theme('fontFamily.serif');
 }

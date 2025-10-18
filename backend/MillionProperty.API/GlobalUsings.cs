@@ -13,5 +13,6 @@ global using MillionProperty.Domain.Interfaces;
 global using MillionProperty.Infrastructure.Repositories;
 global using MillionProperty.Infrastructure.Data;
 
-using  MillionProperty.API.Responses;
-using MillionProperty.API.Middleware;
+global using  MillionProperty.API.Responses;
+global using MillionProperty.API.Middleware;
+global using MillionProperty.Application.Mappings;

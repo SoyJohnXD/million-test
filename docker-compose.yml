@@ -1,4 +1,4 @@
-# docker-compose.yml (PARA DESARROLLO)
+
 version: "3.8"
 
 services:
