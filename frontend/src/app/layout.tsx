@@ -31,7 +31,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${prata.variable}`}>
       <body>
-        \
         <ThemeProvider>
           <div className="bg-background text-secondary flex min-h-screen flex-col antialiased">
             <Header />

@@ -1,72 +1,117 @@
 'use client';
 
-import { useSearchParams, useRouter, usePathname } from 'next/navigation';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 
-export interface FilterParams {
-  address?: string | null;
-  name?: string | null;
-  minPrice?: number | null;
-  maxPrice?: number | null;
-  page?: number;
+// --- Tipos ---
+export interface PriceFilterValue {
+  min: number | null;
+  max: number | null;
 }
 
-type FilterKey = keyof FilterParams;
+export interface Filters {
+  address?: string | null;
+  price?: PriceFilterValue;
+  bedrooms?: number | null;
+  bathrooms?: number | null;
+  year?: number | null;
+  sqm?: number | null;
+}
 
 export function useFilterParams() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const getCurrentFilters = useCallback((): FilterParams => {
-    const params: FilterParams = {};
-    const pageStr = searchParams.get('page');
-    const minPriceStr = searchParams.get('minPrice');
-    const maxPriceStr = searchParams.get('maxPrice');
-
-    params.address = searchParams.get('address');
-    params.name = searchParams.get('name');
-    params.page = pageStr ? parseInt(pageStr, 10) : 1;
-    params.minPrice = minPriceStr ? parseFloat(minPriceStr) : null;
-    params.maxPrice = maxPriceStr ? parseFloat(maxPriceStr) : null;
-
-    if (isNaN(params.page)) params.page = 1;
-    if (minPriceStr && isNaN(params.minPrice as number)) params.minPrice = null;
-    if (maxPriceStr && isNaN(params.maxPrice as number)) params.maxPrice = null;
-
-    return params;
+  const filters: Filters = useMemo(() => {
+    const params = Object.fromEntries(searchParams.entries());
+    return {
+      address: params.address ?? null,
+      price:
+        params.minPrice || params.maxPrice
+          ? {
+              min: params.minPrice ? Number(params.minPrice) : null,
+              max: params.maxPrice ? Number(params.maxPrice) : null,
+            }
+          : undefined,
+      bedrooms: params.bedrooms ? Number(params.bedrooms) : null,
+      bathrooms: params.bathrooms ? Number(params.bathrooms) : null,
+      year: params.year ? Number(params.year) : null,
+      sqm: params.sqm ? Number(params.sqm) : null,
+    };
   }, [searchParams]);
 
   const updateFilter = useCallback(
-    (key: FilterKey, value: string | number | null | undefined) => {
-      const currentParams = new URLSearchParams(
-        Array.from(searchParams.entries())
-      );
+    <K extends keyof Filters>(key: K, value: Filters[K]) => {
+      const newParams = new URLSearchParams(searchParams.toString());
 
-      if (value === null || value === undefined || value === '') {
-        currentParams.delete(key);
-      } else {
-        currentParams.set(key, String(value));
+      switch (key) {
+        case 'price': {
+          const priceVal = value as PriceFilterValue;
+          if (priceVal?.min != null)
+            newParams.set('minPrice', String(priceVal.min));
+          else newParams.delete('minPrice');
+
+          if (priceVal?.max != null)
+            newParams.set('maxPrice', String(priceVal.max));
+          else newParams.delete('maxPrice');
+          break;
+        }
+
+        case 'address': {
+          const addressVal = (value as string | null)?.trim();
+          if (addressVal) newParams.set('address', addressVal);
+          else newParams.delete('address');
+          break;
+        }
+
+        default: {
+          const numericVal = value as number | null;
+          if (numericVal != null)
+            newParams.set(String(key), String(numericVal));
+          else newParams.delete(String(key));
+          break;
+        }
       }
 
-      if (key !== 'page') {
-        currentParams.set('page', '1');
-      }
-
-      const newQueryString = currentParams.toString();
-      const newUrl = newQueryString
-        ? `${pathname}?${newQueryString}`
-        : pathname;
-
-      router.push(newUrl, { scroll: false });
+      router.replace(`${pathname}?${newParams.toString()}`, { scroll: false });
     },
-    [pathname, router, searchParams]
+    [router, pathname, searchParams]
   );
 
-  const currentFilters = getCurrentFilters();
+  /**
+   * Limpia un filtro individual
+   */
+  const clearFilter = useCallback(
+    (key: keyof Filters) => {
+      const newParams = new URLSearchParams(searchParams.toString());
+
+      switch (key) {
+        case 'price':
+          newParams.delete('minPrice');
+          newParams.delete('maxPrice');
+          break;
+        case 'address':
+          newParams.delete('address');
+          break;
+        default:
+          newParams.delete(String(key));
+          break;
+      }
+
+      router.replace(`${pathname}?${newParams.toString()}`, { scroll: false });
+    },
+    [router, pathname, searchParams]
+  );
+
+  const clearAllFilters = useCallback(() => {
+    router.replace(pathname, { scroll: false });
+  }, [router, pathname]);
 
   return {
-    filters: currentFilters,
+    filters,
     updateFilter,
+    clearFilter,
+    clearAllFilters,
   };
 }

@@ -3,14 +3,14 @@ import { useState, useEffect, useCallback } from 'react';
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 import { useDebounce } from '@/hooks/useDebounce';
-import { LocationSearchResult } from '@/types/location';
+import { CityResult } from '@/types/location';
 import { SearchResultItem } from './SearchResultItem';
 import { useFilterParams } from '@/hooks/useFilterParams';
 
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Spinner } from '@/components/ui/Spinner';
-import { searchLocations } from '@/services/location';
+import { searchCities } from '@/services/location';
 
 interface LocationSearchModalProps {
   isOpen: boolean;
@@ -23,7 +23,7 @@ export function LocationSearchModal({
 }: LocationSearchModalProps) {
   const { updateFilter } = useFilterParams();
   const [searchTerm, setSearchTerm] = useState('');
-  const [results, setResults] = useState<LocationSearchResult[]>([]);
+  const [results, setResults] = useState<CityResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
@@ -32,7 +32,7 @@ export function LocationSearchModal({
     const fetchResults = async () => {
       if (debouncedSearchTerm.length >= 3) {
         setIsLoading(true);
-        const locations = await searchLocations(debouncedSearchTerm);
+        const locations = await searchCities(debouncedSearchTerm);
         setResults(locations);
         setIsLoading(false);
       } else {
@@ -65,7 +65,7 @@ export function LocationSearchModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 pt-16 sm:pt-24"
+      className="fixed inset-0 z-[70] flex items-start justify-center bg-black/50 pt-16 sm:pt-24"
       onClick={onClose}
     >
       <div
@@ -87,7 +87,7 @@ export function LocationSearchModal({
               variant="ghost"
               size="icon"
               onClick={() => setSearchTerm('')}
-              className="absolute top-1/2 right-5 h-8 w-8 -translate-y-1/2 rounded-full"
+              className="hover:bg- absolute top-1/2 right-5 h-6 w-6 -translate-y-1/2 rounded-full"
               aria-label="Clear search"
             >
               <XMarkIcon className="h-5 w-5" />
@@ -104,14 +104,14 @@ export function LocationSearchModal({
           {!isLoading &&
             results.length === 0 &&
             debouncedSearchTerm.length >= 3 && (
-              <p className="px-4 py-6 text-center text-sm text-gray-500">
+              <p className="text-text-muted px-4 py-6 text-center text-sm">
                 No results found for &quot;{debouncedSearchTerm}&quot;.
               </p>
             )}
           {!isLoading && results.length > 0 && (
             <ul>
-              {results.map((location) => (
-                <li key={location.place_id}>
+              {results.map((location, index) => (
+                <li key={'location-' + index}>
                   <SearchResultItem
                     location={location}
                     onSelect={handleSelectLocation}

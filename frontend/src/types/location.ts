@@ -1,6 +1,6 @@
-export interface LocationSearchResult {
-  place_id: number;
-  display_name: string;
+export interface CityResult {
+  city: string;
+  country: string;
   lat: string;
   lon: string;
 }

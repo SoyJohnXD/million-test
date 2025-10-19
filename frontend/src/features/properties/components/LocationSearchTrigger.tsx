@@ -12,15 +12,17 @@ export function LocationSearchTrigger({ onClick }: LocationSearchTriggerProps) {
   const currentAddress = searchParams.get('address');
 
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="flex min-w-[200px] items-center justify-start space-x-2 rounded-full border border-gray-300 px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700" // Estilo similar a la inspiración
-    >
-      <MapPinIcon className="h-5 w-5 text-gray-400" />
-      <span className="truncate">
-        {currentAddress ? currentAddress : 'Search location...'}
-      </span>
-    </button>
+    <div className="xs:max-w-[280px] absolute top-1/2 left-1/2 w-full max-w-[250px] -translate-x-1/2 -translate-y-1/2 sm:max-w-[230px] md:max-w-[300px] lg:max-w-[400px]">
+      <button
+        type="button"
+        onClick={onClick}
+        className="dark:hover:bg-primary/30 dark:border-primary/60 text-secondary/30 flex w-full cursor-pointer items-center justify-start space-x-2 rounded-full border border-gray-300 px-3 py-1.5 text-sm transition-all duration-300 ease-in hover:bg-gray-100"
+      >
+        <MapPinIcon className="text-text-muted h-5 w-5" />
+        <span className="text-text-muted truncate">
+          {currentAddress ? currentAddress : 'Search location or name...'}
+        </span>
+      </button>
+    </div>
   );
 }
