@@ -49,6 +49,7 @@ export interface Filters {
   bathrooms: number | null;
   year: number | null;
   sqm: number | null;
+  address?: string | null;
 }
 
 export interface UseFilterParams {

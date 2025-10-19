@@ -1,11 +1,18 @@
+import { forwardRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { PropertyListItem } from '@/types/property';
 import { formatCurrency } from '@/utils/text';
 
-export function PropertyCard({ property }: { property: PropertyListItem }) {
+export const PropertyCard = forwardRef<
+  HTMLDivElement,
+  { property: PropertyListItem }
+>(function PropertyCard({ property }, ref) {
   return (
-    <div className="group border-border bg-surface overflow-hidden rounded-sm border shadow-sm transition-shadow duration-200 hover:shadow-md">
+    <div
+      ref={ref}
+      className="group border-border bg-surface overflow-hidden rounded-sm border shadow-sm transition-shadow duration-200 hover:shadow-md"
+    >
       <Link href={`/${property.idProperty}`} className="block">
         <div className="relative aspect-video overflow-hidden">
           <Image
@@ -58,4 +65,4 @@ export function PropertyCard({ property }: { property: PropertyListItem }) {
       </Link>
     </div>
   );
-}
+});

@@ -101,14 +101,10 @@ export function useFilterParams() {
   );
 
   const clearAllFilters = useCallback(() => {
-    const currentAddress = searchParams.get('address');
-    if (currentAddress) {
-      router.replace(`${pathname}?address=${currentAddress}`, {
-        scroll: false,
-      });
-    } else {
-      router.replace(pathname, { scroll: false });
-    }
+    const newParams = new URLSearchParams();
+    const address = searchParams.get('address');
+    if (address) newParams.set('address', address);
+    router.replace(`${pathname}?${newParams.toString()}`, { scroll: false });
   }, [router, pathname, searchParams]);
 
   return {

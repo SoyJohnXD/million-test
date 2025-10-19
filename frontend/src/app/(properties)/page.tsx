@@ -2,24 +2,43 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { useInView } from 'react-intersection-observer';
 
 import { PropertyList } from '@/features/properties/components/PropertyList';
 import { getProperties } from '@/services/properties';
 import { PropertyListItem } from '@/types/property';
-import { PaginatedList, PropertyFilterParams } from '@/types/api';
+import { PropertyFilterParams } from '@/types/api';
 import { Spinner } from '@/components/ui/Spinner';
 import { QuickFilters } from '@/features/properties/components/quick_filters/QuickFiltersBar';
 
+const PAGE_SIZE = 15;
+
 function PropertiesContent() {
   const searchParams = useSearchParams();
-  const [paginatedProperties, setPaginatedProperties] =
-    useState<PaginatedList<PropertyListItem> | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [properties, setProperties] = useState<PropertyListItem[]>([]);
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [hasNextPage, setHasNextPage] = useState(true);
+
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const [isMoreLoading, setIsMoreLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const { ref } = useInView({
+    threshold: 0,
+    onChange: (inView) => {
+      if (inView) loadMoreProperties(inView);
+    },
+  });
 
   useEffect(() => {
     const fetchProperties = async () => {
-      setIsLoading(true);
+      if (page > 1) {
+        setIsMoreLoading(true);
+      } else {
+        setIsInitialLoading(true);
+        setProperties([]);
+      }
       setError(null);
 
       const params: PropertyFilterParams = {
@@ -43,10 +62,8 @@ function PropertiesContent() {
         minSquareMeters: searchParams.has('sqm')
           ? Number(searchParams.get('sqm'))
           : null,
-        pageNumber: searchParams.has('pageNumber')
-          ? Number(searchParams.get('pageNumber'))
-          : 1,
-        pageSize: 15,
+        pageNumber: page,
+        pageSize: PAGE_SIZE,
       };
 
       Object.keys(params).forEach((key) => {
@@ -58,7 +75,11 @@ function PropertiesContent() {
 
       try {
         const data = await getProperties(params);
-        setPaginatedProperties(data);
+        setProperties((prev) =>
+          page === 1 ? data.items : [...prev, ...data.items]
+        );
+        setTotalCount(data.totalCount);
+        setHasNextPage(data.hasNextPage);
       } catch (err) {
         console.error('Failed to fetch properties:', err);
         setError(
@@ -66,14 +87,21 @@ function PropertiesContent() {
             ? err.message
             : 'An unknown error occurred while fetching properties.'
         );
-        setPaginatedProperties(null);
+        setProperties([]);
       } finally {
-        setIsLoading(false);
+        setIsInitialLoading(false);
+        setIsMoreLoading(false);
       }
     };
 
     fetchProperties();
-  }, [searchParams]);
+  }, [searchParams, page]);
+
+  const loadMoreProperties = (inView: boolean) => {
+    if (inView && hasNextPage && !isMoreLoading && !isInitialLoading) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -89,36 +117,40 @@ function PropertiesContent() {
 
       <div className="mb-4 flex flex-wrap justify-between gap-2">
         <QuickFilters />
-        {!isLoading && !error && paginatedProperties && (
+        {!isInitialLoading && !error && (
           <p className="text-text-muted mb-4 text-sm">
-            {paginatedProperties.totalCount}+ properties found.
+            {totalCount}+ properties found.
           </p>
         )}
       </div>
 
-      {isLoading && (
+      {isInitialLoading && (
         <div className="flex justify-center py-10">
           <Spinner />
         </div>
       )}
 
       {error && (
-        <p className="text-center text-red-600 dark:text-red-400">
+        <p className="py-10 text-center text-red-600 dark:text-red-400">
           Error loading properties: {error}
         </p>
       )}
 
-      {!isLoading && !error && paginatedProperties && (
-        <PropertyList properties={paginatedProperties.items} />
+      {!isInitialLoading && !error && properties.length > 0 && (
+        <PropertyList properties={properties} ref={ref} />
       )}
 
-      {!isLoading &&
-        !error &&
-        (!paginatedProperties || paginatedProperties.items.length === 0) && (
-          <p className="text-text-muted py-10 text-center">
-            No properties found matching your criteria.
-          </p>
-        )}
+      {isMoreLoading && (
+        <div className="flex justify-center py-6">
+          <Spinner />
+        </div>
+      )}
+
+      {!isInitialLoading && !error && properties.length === 0 && (
+        <p className="text-text-muted py-10 text-center">
+          No properties found matching your criteria.
+        </p>
+      )}
     </div>
   );
 }

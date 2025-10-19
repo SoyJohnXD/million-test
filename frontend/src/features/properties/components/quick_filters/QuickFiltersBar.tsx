@@ -60,9 +60,11 @@ export function QuickFilters() {
   const sqmLabel = filters.sqm ? `${filters.sqm}+ m²` : 'Area';
 
   const hasActiveFilters = useMemo(() => {
-    return Object.values(filters).some(
-      (value) => value !== null && value !== undefined
-    );
+    const tempFilters = { ...filters };
+    delete tempFilters.address;
+    return Object.values(tempFilters).some((value) => {
+      return value !== null && value !== undefined;
+    });
   }, [filters]);
 
   return (
