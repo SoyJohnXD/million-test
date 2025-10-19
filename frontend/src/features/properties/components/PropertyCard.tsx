@@ -5,7 +5,7 @@ import { formatCurrency } from '@/utils/text';
 
 export function PropertyCard({ property }: { property: PropertyListItem }) {
   return (
-    <div className="group border-border bg-surface overflow-hidden border shadow-sm transition-shadow duration-200 hover:shadow-md">
+    <div className="group border-border bg-surface overflow-hidden rounded-sm border shadow-sm transition-shadow duration-200 hover:shadow-md">
       <Link href={`/${property.idProperty}`} className="block">
         <div className="relative aspect-video overflow-hidden">
           <Image
@@ -21,20 +21,19 @@ export function PropertyCard({ property }: { property: PropertyListItem }) {
           />
         </div>
         <div className="p-4">
-          <p className="text-text-primary mb-2 text-xl font-semibold">
+          <p className="text-text-primary mb-2 text-lg font-semibold">
             {formatCurrency(property.price)}
           </p>
-          <p className="text-text-muted mb-2 truncate text-sm">
-            {property.address}
-          </p>
-
-          <div className="text-text-muted mb-4 flex space-x-3 text-sm">
+          <div className="text-text-primary/90 mb-2 flex space-x-1 text-sm">
             <span>{property.bedrooms} bed</span>
             <span>&middot;</span>
             <span>{property.bathrooms} bath</span>
             <span>&middot;</span>
             <span>{property.squareMeters} m²</span>
           </div>
+          <p className="text-text-muted mb-4 truncate text-sm">
+            {property.address}
+          </p>
 
           {property.owner && (
             <div className="border-border flex items-center justify-between gap-2 border-t pt-3">

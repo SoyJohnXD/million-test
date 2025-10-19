@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 
-import { PropertyList } from '@/features/properties/components/PropertyLsit';
+import { PropertyList } from '@/features/properties/components/PropertyList';
 import { getProperties } from '@/services/properties';
 import { PropertyListItem } from '@/types/property';
 import { PaginatedList, PropertyFilterParams } from '@/types/api';
@@ -87,7 +87,7 @@ function PropertiesContent() {
         needs and preferences.
       </p>
 
-      <div className="mb-4 flex flex-wrap justify-between">
+      <div className="mb-4 flex flex-wrap justify-between gap-2">
         <QuickFilters />
         {!isLoading && !error && paginatedProperties && (
           <p className="text-text-muted mb-4 text-sm">

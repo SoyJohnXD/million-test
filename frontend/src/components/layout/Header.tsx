@@ -22,7 +22,7 @@ export function Header() {
             className="text-on-Primary flex-shrink-0 font-serif text-2xl font-bold"
           >
             <span className="block sm:hidden">M</span>
-            <span className="hidden sm:block">MILLION</span>
+            <span className="hidden sm:block">MILLION TEST</span>
           </Link>
 
           <div className="flex flex-1 justify-center px-4">
