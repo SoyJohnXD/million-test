@@ -2,14 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { CurrencyInput } from '@/components/ui/CurrencyInput';
-
-interface PriceFilterProps {
-  initialValue?: { min: number | null; max: number | null };
-  setTemporaryValue: (value: {
-    min: number | null;
-    max: number | null;
-  }) => void;
-}
+import { PriceFilterProps } from '../../types/filters';
 
 export function PriceFilter({
   initialValue,

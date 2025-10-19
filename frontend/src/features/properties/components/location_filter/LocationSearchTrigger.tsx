@@ -20,11 +20,11 @@ export function LocationSearchTrigger({ onClick }: LocationSearchTriggerProps) {
         <button
           type="button"
           onClick={onClick}
-          className="dark:hover:bg-primary/30 dark:border-primary/60 text-secondary/30 flex w-full cursor-pointer items-center justify-start space-x-2 rounded-full border border-gray-300 px-3 py-1.5 text-sm transition-all duration-300 ease-in hover:bg-gray-100"
+          className="dark:hover:bg-primary/30 dark:border-primary/60 text-secondary/30 flex w-full cursor-pointer items-center justify-center space-x-2 rounded-full border border-gray-300 px-3 py-1.5 text-sm transition-all duration-300 ease-in hover:bg-gray-100"
         >
           <MapPinIcon className="text-text-muted h-5 w-5" />
           <span className="text-text-muted truncate">
-            {currentAddress ? currentAddress : 'Search location or name...'}
+            {currentAddress ? currentAddress : 'Search by location...'}
           </span>
         </button>
         {currentAddress && (

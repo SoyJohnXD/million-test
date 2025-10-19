@@ -1,15 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
-
-interface CounterFilterProps {
-  initialValue?: number | null;
-  setTemporaryValue: (value: number | null) => void;
-  label?: string;
-  options?: number[];
-  showAny?: boolean;
-  suffix?: string;
-}
+import { CounterFilterProps } from '../../types/filters';
 
 export function CounterFilter({
   initialValue,

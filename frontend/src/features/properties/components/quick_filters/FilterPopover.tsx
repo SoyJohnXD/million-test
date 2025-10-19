@@ -1,29 +1,9 @@
 'use client';
 
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  ReactElement,
-  useCallback,
-} from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { Button } from '@/components/ui/Button';
-
-interface FilterPopoverProps<T = unknown> {
-  trigger: ReactElement<{
-    onClick?: () => void;
-    'aria-expanded'?: boolean;
-    'aria-haspopup'?: string;
-  }>;
-  children: ReactElement<{
-    setTemporaryValue: (value: T) => void;
-    initialValue?: T;
-  }>;
-  onApply: (value: T) => void;
-  onClear?: () => void;
-  initialValue?: T;
-}
+import { FilterPopoverProps } from '../../types/filters';
 
 export function FilterPopover<T>({
   trigger,

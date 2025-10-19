@@ -87,8 +87,13 @@ function PropertiesContent() {
         needs and preferences.
       </p>
 
-      <div className="mb-4">
+      <div className="mb-4 flex flex-wrap justify-between">
         <QuickFilters />
+        {!isLoading && !error && paginatedProperties && (
+          <p className="text-text-muted mb-4 text-sm">
+            {paginatedProperties.totalCount}+ properties found.
+          </p>
+        )}
       </div>
 
       {isLoading && (
@@ -104,12 +109,7 @@ function PropertiesContent() {
       )}
 
       {!isLoading && !error && paginatedProperties && (
-        <>
-          <p className="text-text-muted mb-4 text-sm">
-            {paginatedProperties.totalCount}+ properties found.
-          </p>
-          <PropertyList properties={paginatedProperties.items} />
-        </>
+        <PropertyList properties={paginatedProperties.items} />
       )}
 
       {!isLoading &&

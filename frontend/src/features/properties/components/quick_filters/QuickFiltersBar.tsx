@@ -6,6 +6,7 @@ import { useFilterParams } from '@/hooks/useFilterParams';
 import { useMemo } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { Button } from '@/components/ui/Button';
+import { UseFilterParams, PriceFilterValue } from '../../types/filters';
 
 const formatShortPrice = (value: number | null | undefined): string => {
   if (!value) return '0';
@@ -21,12 +22,10 @@ const formatShortPrice = (value: number | null | undefined): string => {
 
 export function QuickFilters() {
   const { filters, updateFilter, clearFilter, clearAllFilters } =
-    useFilterParams();
+    useFilterParams() as UseFilterParams;
 
-  const handleApplyPrice = (value: {
-    min: number | null;
-    max: number | null;
-  }) => updateFilter('price', value);
+  const handleApplyPrice = (value: PriceFilterValue) =>
+    updateFilter('price', value);
 
   const handleApplyBedrooms = (value: number | null) =>
     updateFilter('bedrooms', value);
@@ -60,7 +59,6 @@ export function QuickFilters() {
 
   const sqmLabel = filters.sqm ? `${filters.sqm}+ m²` : 'Area';
 
-  // Verificar si hay algún filtro activo
   const hasActiveFilters = useMemo(() => {
     return Object.values(filters).some(
       (value) => value !== null && value !== undefined
@@ -76,7 +74,7 @@ export function QuickFilters() {
         label={priceLabel}
       >
         <PriceFilter
-          initialValue={filters.price}
+          initialValue={filters.price as PriceFilterValue}
           setTemporaryValue={() => {}}
         />
       </FilterButton>

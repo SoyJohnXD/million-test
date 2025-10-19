@@ -19,7 +19,7 @@ export function Header() {
         <nav className="container mx-auto flex h-16 items-center justify-between gap-4 px-4">
           <Link
             href="/"
-            className="text-primary flex-shrink-0 font-serif text-2xl font-bold"
+            className="text-on-Primary flex-shrink-0 font-serif text-2xl font-bold"
           >
             <span className="block sm:hidden">M</span>
             <span className="hidden sm:block">MILLION</span>

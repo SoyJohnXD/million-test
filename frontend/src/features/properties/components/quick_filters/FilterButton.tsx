@@ -1,30 +1,20 @@
 import { Button } from '@/components/ui/Button';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { FilterPopover } from './FilterPopover';
+import { FilterButtonProps } from '../../types/filters';
 
-interface FilterButtonProps {
-  onApply: (value: any) => void;
-  onClear: () => void;
-  initialValue: any;
-  label: string;
-  children: React.ReactElement<{
-    setTemporaryValue: (value: any) => void;
-    initialValue?: any;
-  }>;
-}
-
-export const FilterButton: React.FC<FilterButtonProps> = ({
+export const FilterButton = <T,>({
   onApply,
   onClear,
   initialValue,
   label,
   children,
-}) => {
+}: FilterButtonProps<T>) => {
   return (
     <FilterPopover
       onApply={onApply}
       onClear={onClear}
-      initialValue={initialValue}
+      initialValue={initialValue ?? undefined}
       trigger={
         <Button
           variant={initialValue ? 'primary' : 'outline'}

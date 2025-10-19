@@ -7,6 +7,7 @@
   --color-surface: #ffffff;
   --color-background: #f1f1ec;
   --color-border: #d0d0c7;
+  --color-on-primary: #000;
 
   --color-text-primary: #1b1b1b;
   --color-text-secondary: #5f6542;
@@ -22,6 +23,7 @@
   --dark-color-secondary: #e4e4de;
   --dark-color-accent: #3a3a3a;
   --dark-color-surface: #2a2a2a;
+  --dark--color-on-primary: #fff;
   --dark-color-background: #171717;
   --dark-color-border: #3b3b3b;
   --dark-shadow-md:
@@ -46,6 +48,7 @@ body {
 }
 .dark {
   --color-secondary: var(--dark-color-secondary);
+  --color-on-primary: var(--dark-color-on-primary);
   --color-accent: var(--dark-color-accent);
   --color-surface: var(--dark-color-surface);
   --color-background: var(--dark-color-background);
@@ -66,4 +69,24 @@ body {
 
 .font-heading {
   font-family: theme('fontFamily.serif');
+}
+
+.bg-surface {
+  background-color: var(--color-surface);
+}
+
+.text-text-primary {
+  color: var(--color-text-primary);
+}
+
+.text-text-secondary {
+  color: var(--color-text-secondary);
+}
+
+.text-text-muted {
+  color: var(--color-text-muted);
+}
+
+.border-border {
+  border-color: var(--color-border);
 }
