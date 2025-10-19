@@ -3,6 +3,9 @@ import { FilterButton } from './FilterButton';
 import { PriceFilter } from './PriceFilter';
 import { CounterFilter } from './CounterFilter';
 import { useFilterParams } from '@/hooks/useFilterParams';
+import { useMemo } from 'react';
+import { XMarkIcon } from '@heroicons/react/24/outline';
+import { Button } from '@/components/ui/Button';
 
 const formatShortPrice = (value: number | null | undefined): string => {
   if (!value) return '0';
@@ -17,7 +20,8 @@ const formatShortPrice = (value: number | null | undefined): string => {
 };
 
 export function QuickFilters() {
-  const { filters, updateFilter, clearFilter } = useFilterParams();
+  const { filters, updateFilter, clearFilter, clearAllFilters } =
+    useFilterParams();
 
   const handleApplyPrice = (value: {
     min: number | null;
@@ -55,6 +59,13 @@ export function QuickFilters() {
   const yearLabel = filters.year ? `Since ${filters.year}` : 'Year';
 
   const sqmLabel = filters.sqm ? `${filters.sqm}+ m²` : 'Area';
+
+  // Verificar si hay algún filtro activo
+  const hasActiveFilters = useMemo(() => {
+    return Object.values(filters).some(
+      (value) => value !== null && value !== undefined
+    );
+  }, [filters]);
 
   return (
     <div className="flex flex-wrap gap-2">
@@ -125,6 +136,18 @@ export function QuickFilters() {
           setTemporaryValue={() => {}}
         />
       </FilterButton>
+
+      {hasActiveFilters && (
+        <Button
+          variant={'secondary'}
+          size="sm"
+          className="bg-primary/35 flex items-center gap-1 rounded-full"
+          onClick={clearAllFilters}
+        >
+          <span>Clear All</span>
+          <XMarkIcon className="h-4 w-4" />
+        </Button>
+      )}
     </div>
   );
 }

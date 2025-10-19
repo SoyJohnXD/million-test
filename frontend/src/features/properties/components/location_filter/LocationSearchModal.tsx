@@ -4,13 +4,13 @@ import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 import { useDebounce } from '@/hooks/useDebounce';
 import { CityResult } from '@/types/location';
-import { SearchResultItem } from './SearchResultItem';
 import { useFilterParams } from '@/hooks/useFilterParams';
 
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Spinner } from '@/components/ui/Spinner';
 import { searchCities } from '@/services/location';
+import { SearchResultItem } from '../SearchResultItem';
 
 interface LocationSearchModalProps {
   isOpen: boolean;

@@ -1,15 +1,14 @@
-// src/app/(properties)/page.tsx
-'use client'; // <-- Convertir a Client Component
+'use client';
 
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 import { PropertyList } from '@/features/properties/components/PropertyLsit';
-import { QuickFilters } from '@/features/properties/components/filters/QuickFiltersBar';
 import { getProperties } from '@/services/properties';
 import { PropertyListItem } from '@/types/property';
 import { PaginatedList, PropertyFilterParams } from '@/types/api';
 import { Spinner } from '@/components/ui/Spinner';
+import { QuickFilters } from '@/features/properties/components/quick_filters/QuickFiltersBar';
 
 function PropertiesContent() {
   const searchParams = useSearchParams();
@@ -74,7 +73,7 @@ function PropertiesContent() {
     };
 
     fetchProperties();
-  }, [searchParams]); // <-- Re-ejecutar cuando cambien los searchParams
+  }, [searchParams]);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -89,7 +88,6 @@ function PropertiesContent() {
       </p>
 
       <div className="mb-4">
-        {/* QuickFilters ya actualiza la URL, lo cual disparará el useEffect */}
         <QuickFilters />
       </div>
 
@@ -111,7 +109,6 @@ function PropertiesContent() {
             {paginatedProperties.totalCount}+ properties found.
           </p>
           <PropertyList properties={paginatedProperties.items} />
-          {/* Aquí podrías añadir los controles de paginación más adelante */}
         </>
       )}
 
@@ -126,7 +123,6 @@ function PropertiesContent() {
   );
 }
 
-// Envolver PropertiesContent con Suspense para manejar la carga inicial de useSearchParams
 export default function PropertiesPage() {
   return (
     <Suspense

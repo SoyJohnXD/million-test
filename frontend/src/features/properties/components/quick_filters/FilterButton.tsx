@@ -29,7 +29,7 @@ export const FilterButton: React.FC<FilterButtonProps> = ({
         <Button
           variant={initialValue ? 'primary' : 'outline'}
           size="sm"
-          className="flex items-center gap-1"
+          className="flex items-center gap-1 rounded-full"
         >
           <span>{label}</span>
           <ChevronDownIcon className="h-4 w-4" />

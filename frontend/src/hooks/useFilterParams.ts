@@ -3,7 +3,6 @@
 import { useCallback, useMemo } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 
-// --- Tipos ---
 export interface PriceFilterValue {
   min: number | null;
   max: number | null;
@@ -79,9 +78,6 @@ export function useFilterParams() {
     [router, pathname, searchParams]
   );
 
-  /**
-   * Limpia un filtro individual
-   */
   const clearFilter = useCallback(
     (key: keyof Filters) => {
       const newParams = new URLSearchParams(searchParams.toString());
@@ -105,8 +101,15 @@ export function useFilterParams() {
   );
 
   const clearAllFilters = useCallback(() => {
-    router.replace(pathname, { scroll: false });
-  }, [router, pathname]);
+    const currentAddress = searchParams.get('address');
+    if (currentAddress) {
+      router.replace(`${pathname}?address=${currentAddress}`, {
+        scroll: false,
+      });
+    } else {
+      router.replace(pathname, { scroll: false });
+    }
+  }, [router, pathname, searchParams]);
 
   return {
     filters,

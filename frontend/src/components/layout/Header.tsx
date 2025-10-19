@@ -6,8 +6,8 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 
 import { Button } from '@/components/ui/Button';
 import { ThemeToggleButton } from '../ui/ThemeToggleButton';
-import { LocationSearchTrigger } from '@/features/properties/components/LocationSearchTrigger';
-import { LocationSearchModal } from '@/features/properties/components/LocationSearchModal';
+import { LocationSearchTrigger } from '@/features/properties/components/location_filter/LocationSearchTrigger';
+import { LocationSearchModal } from '@/features/properties/components/location_filter/LocationSearchModal';
 
 export function Header() {
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
