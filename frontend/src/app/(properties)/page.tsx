@@ -1,12 +1,80 @@
+// src/app/(properties)/page.tsx
+'use client'; // <-- Convertir a Client Component
+
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
+
 import { PropertyList } from '@/features/properties/components/PropertyLsit';
 import { QuickFilters } from '@/features/properties/components/filters/QuickFiltersBar';
 import { getProperties } from '@/services/properties';
+import { PropertyListItem } from '@/types/property';
+import { PaginatedList, PropertyFilterParams } from '@/types/api';
+import { Spinner } from '@/components/ui/Spinner';
 
-export default async function PropertiesPage() {
-  const paginatedProperties = await getProperties({
-    pageNumber: 1,
-    pageSize: 9,
-  });
+function PropertiesContent() {
+  const searchParams = useSearchParams();
+  const [paginatedProperties, setPaginatedProperties] =
+    useState<PaginatedList<PropertyListItem> | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProperties = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      const params: PropertyFilterParams = {
+        name: searchParams.get('name'),
+        address: searchParams.get('address'),
+        minPrice: searchParams.has('minPrice')
+          ? Number(searchParams.get('minPrice'))
+          : null,
+        maxPrice: searchParams.has('maxPrice')
+          ? Number(searchParams.get('maxPrice'))
+          : null,
+        bedrooms: searchParams.has('bedrooms')
+          ? Number(searchParams.get('bedrooms'))
+          : null,
+        bathrooms: searchParams.has('bathrooms')
+          ? Number(searchParams.get('bathrooms'))
+          : null,
+        minYear: searchParams.has('year')
+          ? Number(searchParams.get('year'))
+          : null,
+        minSquareMeters: searchParams.has('sqm')
+          ? Number(searchParams.get('sqm'))
+          : null,
+        pageNumber: searchParams.has('pageNumber')
+          ? Number(searchParams.get('pageNumber'))
+          : 1,
+        pageSize: 15,
+      };
+
+      Object.keys(params).forEach((key) => {
+        const typedKey = key as keyof PropertyFilterParams;
+        if (params[typedKey] === null || params[typedKey] === undefined) {
+          delete params[typedKey];
+        }
+      });
+
+      try {
+        const data = await getProperties(params);
+        setPaginatedProperties(data);
+      } catch (err) {
+        console.error('Failed to fetch properties:', err);
+        setError(
+          err instanceof Error
+            ? err.message
+            : 'An unknown error occurred while fetching properties.'
+        );
+        setPaginatedProperties(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProperties();
+  }, [searchParams]); // <-- Re-ejecutar cuando cambien los searchParams
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -21,14 +89,54 @@ export default async function PropertiesPage() {
       </p>
 
       <div className="mb-4">
+        {/* QuickFilters ya actualiza la URL, lo cual disparará el useEffect */}
         <QuickFilters />
       </div>
 
-      <p className="text-text-muted mb-4 text-sm">
-        {paginatedProperties.totalCount}+ properties found.
-      </p>
+      {isLoading && (
+        <div className="flex justify-center py-10">
+          <Spinner />
+        </div>
+      )}
 
-      <PropertyList properties={paginatedProperties.items} />
+      {error && (
+        <p className="text-center text-red-600 dark:text-red-400">
+          Error loading properties: {error}
+        </p>
+      )}
+
+      {!isLoading && !error && paginatedProperties && (
+        <>
+          <p className="text-text-muted mb-4 text-sm">
+            {paginatedProperties.totalCount}+ properties found.
+          </p>
+          <PropertyList properties={paginatedProperties.items} />
+          {/* Aquí podrías añadir los controles de paginación más adelante */}
+        </>
+      )}
+
+      {!isLoading &&
+        !error &&
+        (!paginatedProperties || paginatedProperties.items.length === 0) && (
+          <p className="text-text-muted py-10 text-center">
+            No properties found matching your criteria.
+          </p>
+        )}
     </div>
+  );
+}
+
+// Envolver PropertiesContent con Suspense para manejar la carga inicial de useSearchParams
+export default function PropertiesPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex justify-center py-20">
+          <Spinner />
+        </div>
+      }
+    >
+      <PropertiesContent />
+    </Suspense>
   );
 }

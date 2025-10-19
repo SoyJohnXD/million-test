@@ -27,6 +27,10 @@ public class GetFilteredPropertiesQueryHandler : IRequestHandler<GetFilteredProp
             request.Address,
             request.MinPrice,
             request.MaxPrice,
+            request.Bedrooms,       
+            request.Bathrooms,      
+            request.MinYear,        
+            request.MinSquareMeters,
             request.PageNumber,
             request.PageSize
         );

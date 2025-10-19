@@ -9,10 +9,23 @@ public static class MongoDbSeeder
         "Loft Industrial", "Chalet Suizo", "Bungalow en la playa", "Residencia Histórica" 
     };
 
-    private static readonly string[] _cities = {
-        "New York", "Paris", "Tokyo", "London", "Bogotá", "Sydney", "Berlin", 
-        "Dubai", "Toronto", "Madrid", "Roma", "Buenos Aires", "Ciudad de México"
+    private static readonly Dictionary<string, string> _citiesAndCountries = new()
+    {
+        { "New York", "Estados Unidos de América" },
+        { "Paris", "Francia" },
+        { "Tokyo", "Japon" },
+        { "London", "Reino Unido" },
+        { "Bogotá", "Colombia" },
+        { "Sydney", "Australia" },
+        { "Berlin", "Alemania" },
+        { "Dubai", "Emiratos Árabes Unidos" },
+        { "Toronto", "Canada" },
+        { "Madrid", "España" },
+        { "Roma", "Italia" },
+        { "Buenos Aires", "Argentina" },
+        { "Ciudad de México", "Mexico" }
     };
+    private static readonly string[] _cities = _citiesAndCountries.Keys.ToArray();
 
     private static readonly string[] _streetNames = {
         "Main St", "Ocean Drive", "Rue de Rivoli", "King's Road", "Avenida Siempre Viva",
@@ -70,7 +83,8 @@ public static class MongoDbSeeder
             for (int i = 0; i < 100; i++)
             {
                 var propId = ObjectId.GenerateNewId().ToString();
-                var city = _cities[_rand.Next(_cities.Length)];
+                var city = _cities[_rand.Next(_cities.Length)]; 
+                var country = _citiesAndCountries[city];
                 var type = _propertyTypes[_rand.Next(_propertyTypes.Length)];
                 var street = _streetNames[_rand.Next(_streetNames.Length)];
                 var year = _rand.Next(1980, 2024);
@@ -81,7 +95,7 @@ public static class MongoDbSeeder
                 {
                     IdProperty = propId,
                     Name = $"{type} en {city}",
-                    Address = $"{_rand.Next(1, 1000)} {street}, {city}",
+                    Address = $"{_rand.Next(1, 1000)} {street}, {city}, {country}",
                     Price = _rand.Next(200000, 8000000),
                     CodeInternal = $"{city.Substring(0, 2).ToUpper()}{i:000}",
                     Year = year,

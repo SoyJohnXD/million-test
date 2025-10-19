@@ -2,20 +2,37 @@ import { fetchApi } from './api';
 import { PropertyListItem, PropertyDetail } from '@/types/property';
 import { PaginatedList, PropertyFilterParams } from '@/types/api';
 
+const appendParamIfExists = (
+  params: URLSearchParams,
+  value: string | number | null | undefined,
+  paramName: string
+) => {
+  if (value !== undefined && value !== null) {
+    params.append(paramName, value.toString());
+  }
+};
+
 export async function getProperties(
   params: PropertyFilterParams = {}
 ): Promise<PaginatedList<PropertyListItem>> {
   const queryParams = new URLSearchParams();
-  if (params.name) queryParams.append('Name', params.name);
-  if (params.address) queryParams.append('Address', params.address);
-  if (params.minPrice !== undefined && params.minPrice !== null)
-    queryParams.append('MinPrice', params.minPrice.toString());
-  if (params.maxPrice !== undefined && params.maxPrice !== null)
-    queryParams.append('MaxPrice', params.maxPrice.toString());
-  if (params.pageNumber)
-    queryParams.append('PageNumber', params.pageNumber.toString());
-  if (params.pageSize)
-    queryParams.append('PageSize', params.pageSize.toString());
+
+  const paramMappings: { [key: string]: string } = {
+    name: 'Name',
+    address: 'Address',
+    minPrice: 'MinPrice',
+    maxPrice: 'MaxPrice',
+    bedrooms: 'Bedrooms',
+    bathrooms: 'Bathrooms',
+    minYear: 'MinYear',
+    minSquareMeters: 'MinSquareMeters',
+    pageNumber: 'PageNumber',
+    pageSize: 'PageSize',
+  };
+
+  Object.entries(params).forEach(([key, value]) => {
+    appendParamIfExists(queryParams, value, paramMappings[key]);
+  });
 
   const queryString = queryParams.toString();
   const endpoint = `/Properties${queryString ? `?${queryString}` : ''}`;

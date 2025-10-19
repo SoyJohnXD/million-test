@@ -12,11 +12,15 @@ public class PropertyRepository : IPropertyRepository
     }
 
     public async Task<(IEnumerable<Property> Properties, int TotalCount)> GetByFiltersAsync(
-        string? name, 
-        string? address, 
-        decimal? minPrice, 
-        decimal? maxPrice, 
-        int pageNumber, 
+        string? name,
+        string? address,
+        decimal? minPrice,
+        decimal? maxPrice,
+        int? bedrooms,         
+        int? bathrooms,        
+        int? minYear,          
+        double? minSquareMeters, 
+        int pageNumber,
         int pageSize)
     {
         var filterBuilder = Builders<Property>.Filter;
@@ -28,9 +32,10 @@ public class PropertyRepository : IPropertyRepository
         }
 
         if (!string.IsNullOrEmpty(address))
-        {
-            filter &= filterBuilder.Regex(p => p.Address, new MongoDB.Bson.BsonRegularExpression(address, "i"));
-        }
+    {
+        var escapedAddress = System.Text.RegularExpressions.Regex.Escape(address.Trim());
+        filter &= filterBuilder.Regex(p => p.Address, new MongoDB.Bson.BsonRegularExpression(escapedAddress, "i"));
+    }
 
         if (minPrice.HasValue)
         {
@@ -40,6 +45,29 @@ public class PropertyRepository : IPropertyRepository
         if (maxPrice.HasValue)
         {
             filter &= filterBuilder.Lte(p => p.Price, maxPrice.Value);
+        }
+        if (bedrooms.HasValue)
+        {
+            
+            filter &= filterBuilder.Gte(p => p.Bedrooms, bedrooms.Value);
+        }
+
+        if (bathrooms.HasValue)
+        {
+           
+            filter &= filterBuilder.Gte(p => p.Bathrooms, bathrooms.Value);
+        }
+
+        if (minYear.HasValue)
+        {
+           
+            filter &= filterBuilder.Gte(p => p.Year, minYear.Value);
+        }
+
+        if (minSquareMeters.HasValue)
+        {
+            
+            filter &= filterBuilder.Gte(p => p.SquareMeters, minSquareMeters.Value);
         }
 
         var totalCountTask = _propertiesCollection.CountDocumentsAsync(filter);

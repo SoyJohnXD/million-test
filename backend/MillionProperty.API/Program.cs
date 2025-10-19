@@ -34,6 +34,20 @@ builder.Services.AddSingleton<IPropertyTraceRepository>(sp =>
     return new PropertyTraceRepository(settings);
 });
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins"; 
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy  =>
+                      {
+                          policy.WithOrigins("http://localhost:3000") 
+                                .AllowAnyHeader()
+                                .AllowAnyMethod();
+                          //TODO:  Evita AllowAnyOrigin() en producción si es posible.
+                      });
+});
+
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(MappingProfile).Assembly));
 
@@ -55,6 +69,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthorization();
 app.MapControllers();
 

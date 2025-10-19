@@ -5,6 +5,10 @@ public class GetFilteredPropertiesQuery : IRequest<PaginatedListDto<PropertyList
     public string? Address { get; set; }
     public decimal? MinPrice { get; set; }
     public decimal? MaxPrice { get; set; }
+    public int? Bedrooms { get; set; } 
+    public int? Bathrooms { get; set; } 
+    public int? MinYear { get; set; } 
+    public double? MinSquareMeters { get; set; }
 
     private const int MaxPageSize = 50;
     private int _pageSize = 10;
