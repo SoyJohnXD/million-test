@@ -10,6 +10,7 @@ export function FilterPopover<T>({
   onApply,
   onClear,
   initialValue,
+  validateApply,
 }: FilterPopoverProps<T>) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -17,9 +18,13 @@ export function FilterPopover<T>({
   const [temporaryValue, setTemporaryValue] = useState<T | undefined>(
     initialValue
   );
+  const [applyError, setApplyError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isOpen) setTemporaryValue(initialValue);
+    if (!isOpen) {
+      setTemporaryValue(initialValue);
+      setApplyError(null);
+    }
   }, [isOpen, initialValue]);
 
   useEffect(() => {
@@ -34,6 +39,7 @@ export function FilterPopover<T>({
       ) {
         setIsOpen(false);
         setTemporaryValue(initialValue);
+        setApplyError(null);
       }
     };
 
@@ -41,6 +47,7 @@ export function FilterPopover<T>({
       if (event.key === 'Escape') {
         setIsOpen(false);
         setTemporaryValue(initialValue);
+        setApplyError(null);
       }
     };
 
@@ -53,14 +60,24 @@ export function FilterPopover<T>({
   }, [isOpen, initialValue]);
 
   const handleApply = useCallback(() => {
-    onApply(temporaryValue as T);
+    const value = temporaryValue as T;
+    if (validateApply) {
+      const error = validateApply(value);
+      if (error) {
+        setApplyError(error);
+        return;
+      }
+    }
+    onApply(value);
     setIsOpen(false);
-  }, [onApply, temporaryValue]);
+    setApplyError(null);
+  }, [onApply, temporaryValue, validateApply]);
 
   const handleClear = useCallback(() => {
     onClear?.();
     setTemporaryValue(initialValue);
     setIsOpen(false);
+    setApplyError(null);
   }, [onClear, initialValue]);
 
   const togglePopover = () => setIsOpen((prev) => !prev);
@@ -87,6 +104,7 @@ export function FilterPopover<T>({
             {children({
               setTemporaryValue,
               initialValue: temporaryValue,
+              applyError: applyError ?? undefined,
             })}
           </div>
 

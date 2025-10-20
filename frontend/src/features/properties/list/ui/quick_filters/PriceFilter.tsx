@@ -7,6 +7,7 @@ import { PriceFilterProps } from '../../types/filters';
 export function PriceFilter({
   initialValue,
   setTemporaryValue,
+  applyError,
 }: PriceFilterProps) {
   const [localMin, setLocalMin] = useState<number | ''>(
     initialValue?.min ?? ''
@@ -25,14 +26,14 @@ export function PriceFilter({
     if (type === 'min') {
       setLocalMin(num);
       setTemporaryValue({
-        min: num === '' ? null : num,
+        min: num === '' ? null : Number(num),
         max: localMax === '' ? null : Number(localMax),
       });
     } else {
       setLocalMax(num);
       setTemporaryValue({
         min: localMin === '' ? null : Number(localMin),
-        max: num === '' ? null : num,
+        max: num === '' ? null : Number(num),
       });
     }
   };
@@ -65,6 +66,12 @@ export function PriceFilter({
           />
         </div>
       </div>
+
+      {applyError && (
+        <div className="text-sm text-red-500" role="alert">
+          {applyError}
+        </div>
+      )}
 
       <div className="text-muted-foreground text-xs">
         Prices are in USD (American Dollars)

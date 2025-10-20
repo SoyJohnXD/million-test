@@ -6,6 +6,7 @@ export interface PriceFilterValue {
 export interface PriceFilterProps {
   initialValue?: PriceFilterValue;
   setTemporaryValue: (value: PriceFilterValue) => void;
+  applyError?: string;
 }
 
 export interface CounterFilterProps {
@@ -26,10 +27,12 @@ export interface FilterPopoverProps<T = unknown> {
   children: (args: {
     setTemporaryValue: (value: T) => void;
     initialValue?: T;
+    applyError?: string;
   }) => React.ReactNode;
   onApply: (value: T) => void;
   onClear?: () => void;
   initialValue?: T;
+  validateApply?: (value: T) => string | null | undefined;
 }
 
 export interface FilterButtonProps<T> {
@@ -40,7 +43,9 @@ export interface FilterButtonProps<T> {
   children: (args: {
     setTemporaryValue: (value: T) => void;
     initialValue?: T;
+    applyError?: string;
   }) => React.ReactNode;
+  validateApply?: (value: T) => string | null | undefined;
 }
 
 export interface Filters {

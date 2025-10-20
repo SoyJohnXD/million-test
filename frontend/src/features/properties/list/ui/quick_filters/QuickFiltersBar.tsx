@@ -67,11 +67,20 @@ export function QuickFilters() {
         onClear={handleClearPrice}
         initialValue={filters.price as PriceFilterValue | undefined}
         label={priceLabel}
+        validateApply={(value) => {
+          const min = value?.min ?? null;
+          const max = value?.max ?? null;
+          if (min != null && max != null && min > max) {
+            return 'El precio mínimo no puede ser mayor que el máximo.';
+          }
+          return null;
+        }}
       >
-        {({ setTemporaryValue, initialValue }) => (
+        {({ setTemporaryValue, initialValue, applyError }) => (
           <PriceFilter
             initialValue={initialValue as PriceFilterValue | undefined}
             setTemporaryValue={setTemporaryValue}
+            applyError={applyError}
           />
         )}
       </FilterButton>

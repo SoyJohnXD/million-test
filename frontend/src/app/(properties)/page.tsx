@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import { PropertyList } from '@/features/properties/list/ui/PropertyList';
 import { getProperties } from '@/services/properties';
 import { PropertyListItem } from '@/entities/property/model';
-import { Spinner } from '@/shared/ui';
+import { Spinner, Toast } from '@/shared/ui';
 import PropertiesListClient from '@/features/properties/list/ui/PropertiesListClient';
 import { buildPropertyFilterParams } from '@/features/properties/list/utils/queryParams';
 import { QuickFilters } from '@/features/properties/list/ui/quick_filters/QuickFiltersBar';
@@ -41,8 +41,9 @@ export default async function PropertiesPage({
       hasNextPage: data.hasNextPage,
     };
   } catch (err) {
-    initialError =
+    const message =
       err instanceof Error ? err.message : 'Failed to load properties.';
+    initialError = message;
   }
 
   return (
@@ -69,9 +70,18 @@ export default async function PropertiesPage({
       </div>
 
       {initialError && (
-        <p className="py-10 text-center text-red-600 dark:text-red-400">
-          Error loading properties: {initialError}
-        </p>
+        <div className="mb-4">
+          <Toast
+            variant="error"
+            title="No se pudieron cargar las propiedades"
+            description={
+              initialError.includes('400') ||
+              initialError.toLowerCase().includes('bad request')
+                ? 'Verifica que los filtros sean válidos e inténtalo nuevamente.'
+                : initialError
+            }
+          />
+        </div>
       )}
 
       {!initialError && initialData && initialData.items.length > 0 && (
