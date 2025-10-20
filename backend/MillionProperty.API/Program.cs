@@ -34,17 +34,23 @@ builder.Services.AddSingleton<IPropertyTraceRepository>(sp =>
     return new PropertyTraceRepository(settings);
 });
 
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins"; 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+var corsOrigins = builder.Configuration.GetValue<string>("CorsSettings:AllowedOrigins") 
+    ?? "http://localhost:3000";
+
+var allowedOrigins = corsOrigins.Split(',', StringSplitOptions.RemoveEmptyEntries)
+    .Select(o => o.Trim())
+    .ToArray();
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
                       policy  =>
                       {
-                          policy.WithOrigins("http://localhost:3000") 
+                          policy.WithOrigins(allowedOrigins) 
                                 .AllowAnyHeader()
                                 .AllowAnyMethod();
-                          //TODO:  Evita AllowAnyOrigin() en producción si es posible.
                       });
 });
 

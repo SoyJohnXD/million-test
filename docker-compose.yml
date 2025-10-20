@@ -1,4 +1,3 @@
-
 version: "3.8"
 
 services:
@@ -8,11 +7,15 @@ services:
       dockerfile: MillionProperty.API/Dockerfile
       target: dev
     ports:
-      - "8080:8080"
+      - "${BACKEND_PORT:-8080}:8080"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:8080
-      - MongoDbSettings__ConnectionString=mongodb://mongo:27017
+      - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Development}
+      - ASPNETCORE_URLS=${ASPNETCORE_URLS:-http://+:8080}
+      - MongoDbSettings__ConnectionString=${MONGODB_CONNECTION_STRING:-mongodb://mongo:27017}
+      - MongoDbSettings__DatabaseName=${MONGODB_DATABASE_NAME:-MillionPropertyDB}
+      - CorsSettings__AllowedOrigins=${CORS_ALLOWED_ORIGINS:-http://localhost:3000}
+      - Logging__LogLevel__Default=${LOG_LEVEL:-Information}
+      - Logging__LogLevel__Microsoft.AspNetCore=${LOG_LEVEL_ASPNETCORE:-Warning}
     volumes:
       - ./backend:/src
     depends_on:
@@ -26,12 +29,14 @@ services:
       target: dev
     command: yarn dev --turbo
     ports:
-      - "3000:3000"
+      - "${FRONTEND_PORT:-3000}:3000"
     environment:
-      - NODE_ENV=development
-      - CHOKIDAR_USEPOLLING=true
-      - WATCHPACK_POLLING=true
-      - HOST=0.0.0.0
+      - NODE_ENV=${NODE_ENV:-development}
+      - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8080/api}
+      - INTERNAL_API_BASE_URL=${INTERNAL_API_BASE_URL:-http://backend:8080/api}
+      - CHOKIDAR_USEPOLLING=${CHOKIDAR_USEPOLLING:-true}
+      - WATCHPACK_POLLING=${WATCHPACK_POLLING:-true}
+      - HOST=${HOST:-0.0.0.0}
     volumes:
       - ./frontend:/app
       - /app/node_modules
@@ -43,7 +48,7 @@ services:
   mongo:
     image: mongo:latest
     ports:
-      - "27017:27017"
+      - "${MONGODB_PORT:-27017}:27017"
     volumes:
       - mongo-data:/data/db
     networks:

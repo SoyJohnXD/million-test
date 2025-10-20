@@ -12,8 +12,11 @@ export default async function PropertiesPage({
 }: {
   searchParams: Record<string, string | string[] | undefined>;
 }) {
+  const params = await searchParams;
+
   const urlSearchParams = new URLSearchParams();
-  Object.entries(searchParams || {}).forEach(([key, value]) => {
+
+  Object.entries(params || {}).forEach(([key, value]) => {
     if (Array.isArray(value)) {
       value.forEach((v) => urlSearchParams.append(key, v));
     } else if (value !== undefined) {

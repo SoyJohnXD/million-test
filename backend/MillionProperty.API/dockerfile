@@ -1,33 +1,6 @@
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-WORKDIR /app
-EXPOSE 8080
-
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
-
-COPY ["MillionProperty.API/MillionProperty.API.csproj", "MillionProperty.API/"]
-COPY ["MillionProperty.Application/MillionProperty.Application.csproj", "MillionProperty.Application/"]
-COPY ["MillionProperty.Domain/MillionProperty.Domain.csproj", "MillionProperty.Domain/"]
-COPY ["MillionProperty.Infrastructure/MillionProperty.Infrastructure.csproj", "MillionProperty.Infrastructure/"]
-COPY ["MillionProperty.sln", "./"]
-
-RUN dotnet restore "./MillionProperty.sln"
-
-
-COPY . .
-WORKDIR "/src/MillionProperty.API"
-RUN dotnet build "MillionProperty.API.csproj" -c Release -o /app/build
-
-FROM build AS publish
-RUN dotnet publish "MillionProperty.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
-
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "MillionProperty.API.dll"]
-
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS dev
 WORKDIR /src
+
 COPY . .
 
 EXPOSE 8080
