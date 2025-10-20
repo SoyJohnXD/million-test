@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { PropertyListItem } from '@/types/property';
 import { formatCurrency } from '@/utils/text';
+import { optimizeImageUrl } from '@/utils/image';
 
 export const PropertyCard = forwardRef<
   HTMLDivElement,
@@ -16,10 +17,11 @@ export const PropertyCard = forwardRef<
       <Link href={`/${property.idProperty}`} className="block">
         <div className="relative aspect-video overflow-hidden">
           <Image
-            src={
+            src={optimizeImageUrl(
               property.imageUrl ||
-              'https://via.placeholder.com/300x200?text=No+Image'
-            }
+                'https://via.placeholder.com/300x200?text=No+Image',
+              { width: 800, height: 600 }
+            )}
             alt={`Image of ${property.name}`}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -52,7 +54,10 @@ export const PropertyCard = forwardRef<
                   {property.owner.name}
                 </span>
                 <Image
-                  src={property.owner.photo || 'https://via.placeholder.com/40'}
+                  src={optimizeImageUrl(
+                    property.owner.photo || 'https://via.placeholder.com/40',
+                    { width: 80, height: 80 }
+                  )}
                   alt={property.owner.name}
                   width={40}
                   height={40}
