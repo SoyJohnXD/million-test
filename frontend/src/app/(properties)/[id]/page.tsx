@@ -8,6 +8,7 @@ import { PropertyDetailsSection } from '@/features/property_detail/PropertyDetai
 import { PropertyTraceList } from '@/features/property_detail/PropertyTraceList';
 import { OwnerCard } from '@/features/property_detail/OwnerCard';
 import { Button } from '@/components/ui/Button';
+import { BackButton } from '@/components/ui/BackButton';
 
 interface PropertyDetailPageProps {
   params: {
@@ -25,7 +26,11 @@ export default async function PropertyDetailPage({
   }
 
   return (
-    <div className="bg-background text-secondary container mx-auto px-4 py-8 md:py-12">
+    <div className="bg-background text-secondary container mx-auto px-4">
+      <div className="flex w-full items-end justify-end py-1 md:py-2">
+        <BackButton />
+      </div>
+
       <div className="flex flex-col gap-8 lg:flex-row lg:gap-12">
         <div className="lg:flex-1">
           <PropertyImageGallery
@@ -84,7 +89,6 @@ export default async function PropertyDetailPage({
   );
 }
 
-// Optional: Add metadata generation
 export async function generateMetadata({ params }: PropertyDetailPageProps) {
   const property = await getPropertyById(params.id);
   if (!property) {
