@@ -77,7 +77,7 @@ public class GetFilteredPropertiesQueryHandlerTests
 
         _mockImageRepo.Setup(repo => repo.GetFirstEnabledImageByPropertyIdAsync("prop1")).ReturnsAsync(fakeImage1);
         _mockImageRepo.Setup(repo => repo.GetFirstEnabledImageByPropertyIdAsync("prop2")).ReturnsAsync(fakeImage2);
-
+        
         var result = await _handler.Handle(query, CancellationToken.None);
 
         Assert.IsNotNull(result);
