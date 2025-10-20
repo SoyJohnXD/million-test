@@ -110,8 +110,10 @@ export function LocationSearchModal({
             )}
           {!isLoading && results.length > 0 && (
             <ul>
-              {results.map((location, index) => (
-                <li key={'location-' + index}>
+              {results.map((location) => (
+                <li
+                  key={`location-${location.city}-${location.lat}-${location.lon}`}
+                >
                   <SearchResultItem
                     location={location}
                     onSelect={handleSelectLocation}

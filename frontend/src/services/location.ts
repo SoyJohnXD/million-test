@@ -32,7 +32,21 @@ export async function searchCities(query: string): Promise<CityResult[]> {
       );
     }
 
-    const data: any[] = await response.json();
+    type NominatimResult = {
+      addresstype: string;
+      address?: {
+        city?: string;
+        town?: string;
+        village?: string;
+        hamlet?: string;
+        country?: string;
+      };
+      name?: string;
+      lat: string;
+      lon: string;
+    };
+
+    const data: NominatimResult[] = await response.json();
 
     const filtered = data.filter(
       (item) =>

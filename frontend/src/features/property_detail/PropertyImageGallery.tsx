@@ -1,6 +1,5 @@
 'use client';
 import Image from 'next/image';
-import { optimizeImageUrl } from '@/utils/image';
 
 interface PropertyImageGalleryProps {
   imageUrls: string[];
@@ -27,7 +26,7 @@ export function PropertyImageGallery({
     <div className="flex w-full flex-col gap-2 md:flex-row">
       <div className="relative h-[280px] max-h-[420px] w-full overflow-hidden rounded-lg md:h-[460px] md:w-[60%]">
         <Image
-          src={optimizeImageUrl(mainImage, { width: 900, height: 600 })}
+          src={mainImage}
           alt={`${propertyName} - Imagen principal`}
           fill
           sizes="(max-width: 768px) 100vw, 50vw"
@@ -45,7 +44,7 @@ export function PropertyImageGallery({
               className="relative h-[130px] overflow-hidden rounded-md md:h-[205px]"
             >
               <Image
-                src={optimizeImageUrl(url, { width: 300, height: 300 })}
+                src={url}
                 alt={`${propertyName} - Imagen ${index + 2}`}
                 fill
                 sizes="(max-width: 768px) 50vw, 25vw"

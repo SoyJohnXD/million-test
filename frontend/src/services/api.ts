@@ -23,7 +23,9 @@ export async function fetchApi<T>(
       let errorData: ApiResponse<unknown> | null = null;
       try {
         errorData = await response.json();
-      } catch (jsonError) {}
+      } catch (jsonError) {
+        console.error('Error parsing error response JSON:', jsonError);
+      }
       throw new Error(
         `API request failed with status ${response.status}: ${
           errorData?.message || response.statusText
