@@ -69,72 +69,82 @@ export function QuickFilters() {
 
   return (
     <div className="flex flex-wrap gap-2">
-      <FilterButton
+      <FilterButton<PriceFilterValue>
         onApply={handleApplyPrice}
         onClear={handleClearPrice}
-        initialValue={filters.price}
+        initialValue={filters.price as PriceFilterValue | undefined}
         label={priceLabel}
       >
-        <PriceFilter
-          initialValue={filters.price as PriceFilterValue}
-          setTemporaryValue={() => {}}
-        />
+        {({ setTemporaryValue, initialValue }) => (
+          <PriceFilter
+            initialValue={initialValue as PriceFilterValue | undefined}
+            setTemporaryValue={setTemporaryValue}
+          />
+        )}
       </FilterButton>
 
-      <FilterButton
+      <FilterButton<number | null>
         onApply={handleApplyBedrooms}
         onClear={handleClearBedrooms}
         initialValue={filters.bedrooms}
         label={bedroomsLabel}
       >
-        <CounterFilter
-          initialValue={filters.bedrooms}
-          label="Minimum Bedrooms"
-          setTemporaryValue={() => {}}
-        />
+        {({ setTemporaryValue, initialValue }) => (
+          <CounterFilter
+            initialValue={initialValue as number | null | undefined}
+            label="Minimum Bedrooms"
+            setTemporaryValue={setTemporaryValue}
+          />
+        )}
       </FilterButton>
 
-      <FilterButton
+      <FilterButton<number | null>
         onApply={handleApplyBathrooms}
         onClear={handleClearBathrooms}
         initialValue={filters.bathrooms}
         label={bathroomsLabel}
       >
-        <CounterFilter
-          initialValue={filters.bathrooms}
-          label="Minimum Bathrooms"
-          setTemporaryValue={() => {}}
-        />
+        {({ setTemporaryValue, initialValue }) => (
+          <CounterFilter
+            initialValue={initialValue as number | null | undefined}
+            label="Minimum Bathrooms"
+            setTemporaryValue={setTemporaryValue}
+          />
+        )}
       </FilterButton>
 
-      <FilterButton
+      <FilterButton<number | null>
         onApply={handleApplyYear}
         onClear={handleClearYear}
         initialValue={filters.year}
         label={yearLabel}
       >
-        <CounterFilter
-          initialValue={filters.year}
-          label="Year (minimum)"
-          options={[2000, 2005, 2010, 2015, 2020]}
-          showAny={true}
-          setTemporaryValue={() => {}}
-        />
+        {({ setTemporaryValue, initialValue }) => (
+          <CounterFilter
+            initialValue={initialValue as number | null | undefined}
+            label="Year (minimum)"
+            options={[2000, 2005, 2010, 2015, 2020]}
+            showAny={true}
+            setTemporaryValue={setTemporaryValue}
+          />
+        )}
       </FilterButton>
 
-      <FilterButton
+      <FilterButton<number | null>
         onApply={handleApplySqm}
         onClear={handleClearSqm}
         initialValue={filters.sqm}
         label={sqmLabel}
       >
-        <CounterFilter
-          initialValue={filters.sqm}
-          label="Minimum area (m²)"
-          options={[50, 100, 150, 200, 300, 500]}
-          showAny={true}
-          setTemporaryValue={() => {}}
-        />
+        {({ setTemporaryValue, initialValue }) => (
+          <CounterFilter
+            initialValue={initialValue as number | null | undefined}
+            label="Minimum area (m²)"
+            options={[50, 100, 150, 200, 300, 500]}
+            showAny={true}
+            setTemporaryValue={setTemporaryValue}
+          />
+        )}
       </FilterButton>
 
       {hasActiveFilters && (

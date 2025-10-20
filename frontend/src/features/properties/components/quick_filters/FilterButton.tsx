@@ -11,10 +11,10 @@ export const FilterButton = <T,>({
   children,
 }: FilterButtonProps<T>) => {
   return (
-    <FilterPopover
+    <FilterPopover<T>
       onApply={onApply}
       onClear={onClear}
-      initialValue={initialValue ?? undefined}
+      initialValue={initialValue}
       trigger={
         <Button
           variant={initialValue ? 'primary' : 'outline'}

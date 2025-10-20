@@ -22,23 +22,30 @@ export function useFilterParams() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+  const address = searchParams.get('address');
+  const minPrice = searchParams.get('minPrice');
+  const maxPrice = searchParams.get('maxPrice');
+  const bedrooms = searchParams.get('bedrooms');
+  const bathrooms = searchParams.get('bathrooms');
+  const year = searchParams.get('year');
+  const sqm = searchParams.get('sqm');
+
   const filters: Filters = useMemo(() => {
-    const params = Object.fromEntries(searchParams.entries());
     return {
-      address: params.address ?? null,
+      address: address ?? null,
       price:
-        params.minPrice || params.maxPrice
+        minPrice || maxPrice
           ? {
-              min: params.minPrice ? Number(params.minPrice) : null,
-              max: params.maxPrice ? Number(params.maxPrice) : null,
+              min: minPrice ? Number(minPrice) : null,
+              max: maxPrice ? Number(maxPrice) : null,
             }
           : undefined,
-      bedrooms: params.bedrooms ? Number(params.bedrooms) : null,
-      bathrooms: params.bathrooms ? Number(params.bathrooms) : null,
-      year: params.year ? Number(params.year) : null,
-      sqm: params.sqm ? Number(params.sqm) : null,
+      bedrooms: bedrooms ? Number(bedrooms) : null,
+      bathrooms: bathrooms ? Number(bathrooms) : null,
+      year: year ? Number(year) : null,
+      sqm: sqm ? Number(sqm) : null,
     };
-  }, [searchParams]);
+  }, [address, minPrice, maxPrice, bedrooms, bathrooms, year, sqm]);
 
   const updateFilter = useCallback(
     <K extends keyof Filters>(key: K, value: Filters[K]) => {

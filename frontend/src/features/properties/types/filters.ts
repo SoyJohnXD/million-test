@@ -23,10 +23,10 @@ export interface FilterPopoverProps<T = unknown> {
     'aria-expanded'?: boolean;
     'aria-haspopup'?: string;
   }>;
-  children: React.ReactElement<{
+  children: (args: {
     setTemporaryValue: (value: T) => void;
     initialValue?: T;
-  }>;
+  }) => React.ReactNode;
   onApply: (value: T) => void;
   onClear?: () => void;
   initialValue?: T;
@@ -35,12 +35,12 @@ export interface FilterPopoverProps<T = unknown> {
 export interface FilterButtonProps<T> {
   onApply: (value: T) => void;
   onClear: () => void;
-  initialValue: T | null;
+  initialValue?: T;
   label: string;
-  children: React.ReactElement<{
+  children: (args: {
     setTemporaryValue: (value: T) => void;
     initialValue?: T;
-  }>;
+  }) => React.ReactNode;
 }
 
 export interface Filters {
