@@ -6,7 +6,18 @@ import { getProperties } from '@/services/properties';
 import { PropertyFilterParams } from '@/types/api';
 import { PropertyListItem } from '@/types/property';
 import { PropertyList } from './PropertyList';
-import { Spinner } from '@/components/ui/Spinner';
+
+function PropertyCardSkeleton() {
+  return (
+    <div className="bg-surface flex animate-pulse flex-col gap-2 rounded-lg p-4 shadow-sm">
+      <div className="h-40 w-full rounded-md bg-gray-200" />
+      <div className="h-6 w-3/4 rounded bg-gray-200" />
+      <div className="h-4 w-1/2 rounded bg-gray-200" />
+      <div className="h-4 w-1/3 rounded bg-gray-200" />
+      <div className="h-4 w-1/4 rounded bg-gray-200" />
+    </div>
+  );
+}
 
 type Props = {
   initialParams: PropertyFilterParams;
@@ -66,7 +77,7 @@ export default function PropertiesClient({
   }, [inView, hasNextPage, page, paramsHash, initialParams]);
 
   return (
-    <>
+    <div className="pt-6">
       {extraItems.length > 0 && <PropertyList properties={extraItems} />}
       {error && (
         <p className="py-6 text-center text-red-600 dark:text-red-400">
@@ -75,10 +86,12 @@ export default function PropertiesClient({
       )}
       <div ref={ref} />
       {isMoreLoading && (
-        <div className="flex justify-center py-6">
-          <Spinner />
+        <div className="grid grid-cols-1 gap-6 py-6 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <PropertyCardSkeleton key={i} />
+          ))}
         </div>
       )}
-    </>
+    </div>
   );
 }

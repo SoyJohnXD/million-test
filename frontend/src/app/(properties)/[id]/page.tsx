@@ -18,7 +18,8 @@ interface PropertyDetailPageProps {
 export default async function PropertyDetailPage({
   params,
 }: PropertyDetailPageProps) {
-  const property = await getPropertyById(params.id);
+  const awaitedParams = await params;
+  const property = await getPropertyById(awaitedParams.id);
 
   if (!property) {
     notFound();
@@ -85,7 +86,8 @@ export default async function PropertyDetailPage({
 }
 
 export async function generateMetadata({ params }: PropertyDetailPageProps) {
-  const property = await getPropertyById(params.id);
+  const awaitedParams = await params;
+  const property = await getPropertyById(awaitedParams.id);
   if (!property) {
     return { title: 'Property Not Found' };
   }
