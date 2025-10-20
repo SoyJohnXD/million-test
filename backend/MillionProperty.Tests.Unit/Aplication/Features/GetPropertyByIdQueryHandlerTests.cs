@@ -108,4 +108,53 @@ public class GetPropertyByIdQueryHandlerTests
         _mockImageRepo.Verify(repo => repo.GetAllByPropertyIdAsync(It.IsAny<string>()), Times.Never);
         _mockTraceRepo.Verify(repo => repo.GetByPropertyIdAsync(It.IsAny<string>()), Times.Never);
     }
+
+    [Test]
+    public async Task Handle_Should_ReturnPropertyDetail_WithEmptyRelations_WhenRelatedDataIsMissing()
+    {
+        var propertyId = "propX";
+        var ownerId = "ownerX";
+        var fakeProperty = new Property { IdProperty = propertyId, IdOwner = ownerId, Name = "House X" };
+
+        _mockPropertyRepo.Setup(r => r.GetByIdAsync(propertyId)).ReturnsAsync(fakeProperty);
+        _mockOwnerRepo.Setup(r => r.GetByIdAsync(ownerId)).ReturnsAsync((Owner?)null);
+        _mockImageRepo.Setup(r => r.GetAllByPropertyIdAsync(propertyId)).ReturnsAsync(new List<PropertyImage>());
+        _mockTraceRepo.Setup(r => r.GetByPropertyIdAsync(propertyId)).ReturnsAsync(new List<PropertyTrace>());
+
+        var query = new GetPropertyByIdQuery { Id = propertyId };
+
+        var result = await _handler.Handle(query, CancellationToken.None);
+
+        Assert.IsNotNull(result);
+        Assert.That(result!.Name, Is.EqualTo("House X"));
+        Assert.IsNull(result.Owner, "Owner should be null when repo returns null");
+        Assert.IsNotNull(result.ImageUrls);
+        Assert.That(result.ImageUrls.Count, Is.EqualTo(0));
+        Assert.IsNotNull(result.Traces);
+        Assert.That(result.Traces.Count, Is.EqualTo(0));
+
+        _mockOwnerRepo.Verify(r => r.GetByIdAsync(ownerId), Times.Once);
+        _mockImageRepo.Verify(r => r.GetAllByPropertyIdAsync(propertyId), Times.Once);
+        _mockTraceRepo.Verify(r => r.GetByPropertyIdAsync(propertyId), Times.Once);
+    }
+
+    [Test]
+    public void Handle_Should_ThrowArgumentException_WhenIdIsNull()
+    {
+        var query = new GetPropertyByIdQuery { Id = null! };
+
+        var ex = Assert.ThrowsAsync<ArgumentException>(async () =>
+            await _handler.Handle(query, CancellationToken.None));
+
+        Assert.That(ex!.ParamName, Is.EqualTo("Id"));
+    }
+
+    [Test]
+    public void Handle_Should_ThrowArgumentException_WhenIdIsEmpty()
+    {
+        var query = new GetPropertyByIdQuery { Id = string.Empty };
+
+        Assert.ThrowsAsync<ArgumentException>(async () =>
+            await _handler.Handle(query, CancellationToken.None));
+    }
 }
