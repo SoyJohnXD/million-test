@@ -1,4 +1,4 @@
-import { OwnerDetail, OwnerSummary } from "./owner";
+import type { OwnerDetail, OwnerSummary } from '../owner/model';
 
 export interface PropertyListItem {
   idProperty: string;

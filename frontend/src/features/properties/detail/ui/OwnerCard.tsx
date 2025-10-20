@@ -1,10 +1,9 @@
 'use client';
 
 import Image from 'next/image';
-import { OwnerDetail } from '@/types/owner';
+import { OwnerDetail } from '@/entities/owner/model';
 import { useState } from 'react';
-import { Input } from '@/components/ui/Input';
-import { Button } from '@/components/ui/Button';
+import { Input, Button } from '@/shared/ui';
 
 interface OwnerCardProps {
   owner: OwnerDetail;

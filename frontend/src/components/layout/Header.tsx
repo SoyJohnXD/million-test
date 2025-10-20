@@ -1,13 +1,15 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 
-import { Button } from '@/components/ui/Button';
-import { ThemeToggleButton } from '../ui/ThemeToggleButton';
-import { LocationSearchTrigger } from '@/features/properties/components/location_filter/LocationSearchTrigger';
-import { LocationSearchModal } from '@/features/properties/components/location_filter/LocationSearchModal';
+import { Button } from '@/shared/ui';
+import { ThemeToggleButton } from '@/shared/ui/ThemeToggleButton';
+import {
+  LocationSearchTrigger,
+  LocationSearchModal,
+} from '@/features/properties/list/ui/location-filter';
 
 export function Header() {
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
@@ -26,9 +28,11 @@ export function Header() {
           </Link>
 
           <div className="flex flex-1 justify-center px-4">
-            <LocationSearchTrigger
-              onClick={() => setIsLocationModalOpen(true)}
-            />
+            <Suspense fallback={<div className="h-9 w-full max-w-[400px]" />}>
+              <LocationSearchTrigger
+                onClick={() => setIsLocationModalOpen(true)}
+              />
+            </Suspense>
           </div>
 
           <div className="hidden flex-shrink-0 items-center space-x-2 sm:flex">
@@ -81,10 +85,12 @@ export function Header() {
         </div>
       </div>
 
-      <LocationSearchModal
-        isOpen={isLocationModalOpen}
-        onClose={() => setIsLocationModalOpen(false)}
-      />
+      <Suspense fallback={null}>
+        <LocationSearchModal
+          isOpen={isLocationModalOpen}
+          onClose={() => setIsLocationModalOpen(false)}
+        />
+      </Suspense>
     </>
   );
 }

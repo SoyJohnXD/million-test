@@ -1,3 +1,5 @@
+'use client';
+
 import { Input } from './Input';
 import React, { ChangeEvent, useState, useEffect } from 'react';
 

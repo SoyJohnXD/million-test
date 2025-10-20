@@ -1,6 +1,6 @@
 import { forwardRef } from 'react';
-import { PropertyListItem } from '@/types/property';
-import { PropertyCard } from './PropertyCard';
+import { PropertyListItem } from '@/entities/property/model';
+import { PropertyCard } from '@/features/properties/list/ui/PropertyCard';
 
 interface PropertyListProps {
   properties: PropertyListItem[];

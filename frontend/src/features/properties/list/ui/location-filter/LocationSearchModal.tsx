@@ -1,16 +1,14 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
-import { useDebounce } from '@/hooks/useDebounce';
-import { CityResult } from '@/types/location';
-import { useFilterParams } from '@/hooks/useFilterParams';
+import { useDebounce } from '@/shared/hooks/useDebounce';
+import { CityResult } from '@/entities/location/model';
+import { useFilterParams } from '@/features/properties/list/hooks/useFilterParams';
 
-import { Input } from '@/components/ui/Input';
-import { Button } from '@/components/ui/Button';
-import { Spinner } from '@/components/ui/Spinner';
+import { Input, Button, Spinner } from '@/shared/ui';
 import { searchCities } from '@/services/location';
-import { SearchResultItem } from '../SearchResultItem';
+import { SearchResultItem } from '@/features/properties/list/ui/SearchResultItem';
 
 interface LocationSearchModalProps {
   isOpen: boolean;
@@ -77,7 +75,9 @@ export function LocationSearchModal({
           <Input
             type="text"
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setSearchTerm(e.target.value)
+            }
             placeholder="Search city, neighborhood..."
             className="!rounded-full pr-10 pl-10"
             autoFocus

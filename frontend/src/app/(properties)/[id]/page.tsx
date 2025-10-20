@@ -1,13 +1,13 @@
 import { notFound } from 'next/navigation';
 
 import { getPropertyById } from '@/services/properties';
-import { PropertyImageGallery } from '@/features/property_detail/PropertyImageGallery';
-import { PropertyHeader } from '@/features/property_detail/PropertyHeader';
-import { PropertyDescription } from '@/features/property_detail/PropertyDescription';
-import { PropertyDetailsSection } from '@/features/property_detail/PropertyDetailsSection';
-import { PropertyTraceList } from '@/features/property_detail/PropertyTraceList';
-import { OwnerCard } from '@/features/property_detail/OwnerCard';
-import { BackButton } from '@/components/ui/BackButton';
+import { PropertyImageGallery } from '@/features/properties/detail/ui/PropertyImageGallery';
+import { PropertyHeader } from '@/features/properties/detail/ui/PropertyHeader';
+import { PropertyDescription } from '@/features/properties/detail/ui/PropertyDescription';
+import { PropertyDetailsSection } from '@/features/properties/detail/ui/PropertyDetailsSection';
+import { PropertyTraceList } from '@/features/properties/detail/ui/PropertyTraceList';
+import { OwnerCard } from '@/features/properties/detail/ui/OwnerCard';
+import { BackButton } from '@/shared/ui/BackButton';
 
 interface PropertyDetailPageProps {
   params: {

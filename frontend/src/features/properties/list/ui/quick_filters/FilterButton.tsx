@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/shared/ui';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { FilterPopover } from './FilterPopover';
 import { FilterButtonProps } from '../../types/filters';

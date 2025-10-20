@@ -1,6 +1,6 @@
-import { fetchApi } from './api';
-import { PropertyListItem, PropertyDetail } from '@/types/property';
+import { PropertyListItem, PropertyDetail } from '@/entities/property/model';
 import { PaginatedList, PropertyFilterParams } from '@/types/api';
+import { fetchApi } from './api';
 
 const appendParamIfExists = (
   params: URLSearchParams,

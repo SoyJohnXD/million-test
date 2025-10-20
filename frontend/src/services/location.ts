@@ -1,4 +1,4 @@
-import { CityResult } from '@/types/location';
+import { CityResult } from '@/entities/location/model';
 
 const NOMINATIM_BASE_URL = 'https://nominatim.openstreetmap.org/search';
 

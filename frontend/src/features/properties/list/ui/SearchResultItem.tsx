@@ -1,4 +1,4 @@
-import { CityResult } from '@/types/location';
+import { CityResult } from '@/entities/location/model';
 import { MapPinIcon } from '@heroicons/react/24/solid';
 
 interface SearchResultItemProps {

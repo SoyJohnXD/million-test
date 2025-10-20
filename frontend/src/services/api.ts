@@ -1,11 +1,4 @@
-import { ApiResponse } from '@/types/api';
-
-type NextFetchOptions = {
-  next?: {
-    revalidate?: number | false;
-    tags?: string[];
-  };
-};
+import { ApiResponse, NextFetchOptions } from '@/types/api';
 
 const isServer = typeof window === 'undefined';
 const API_BASE_URL = isServer

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { CurrencyInput } from '@/components/ui/CurrencyInput';
+import { CurrencyInput } from '@/shared/ui/CurrencyInput';
 import { PriceFilterProps } from '../../types/filters';
 
 export function PriceFilter({

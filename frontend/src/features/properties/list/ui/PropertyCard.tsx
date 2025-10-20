@@ -1,7 +1,7 @@
 import { forwardRef, memo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { PropertyListItem } from '@/types/property';
+import { PropertyListItem } from '@/entities/property/model';
 import { formatCurrency } from '@/utils/text';
 
 type PropertyCardProps = {

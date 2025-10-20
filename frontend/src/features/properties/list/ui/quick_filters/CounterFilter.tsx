@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/shared/ui';
 import { CounterFilterProps } from '../../types/filters';
 
 export function CounterFilter({

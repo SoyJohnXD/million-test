@@ -3,9 +3,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { getProperties } from '@/services/properties';
+import { PropertyListItem } from '@/entities/property/model';
+import { PropertyList } from '@/features/properties/list/ui/PropertyList';
 import { PropertyFilterParams } from '@/types/api';
-import { PropertyListItem } from '@/types/property';
-import { PropertyList } from './PropertyList';
 
 function PropertyCardSkeleton() {
   return (
@@ -24,7 +24,7 @@ type Props = {
   hasNextPageInitial: boolean;
 };
 
-export default function PropertiesClient({
+export default function PropertiesListClient({
   initialParams,
   hasNextPageInitial,
 }: Props) {

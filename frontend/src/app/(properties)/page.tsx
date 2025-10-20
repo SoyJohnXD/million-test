@@ -1,11 +1,11 @@
 import { Suspense } from 'react';
-import { PropertyList } from '@/features/properties/components/PropertyList';
+import { PropertyList } from '@/features/properties/list/ui/PropertyList';
 import { getProperties } from '@/services/properties';
-import { PropertyListItem } from '@/types/property';
-import { Spinner } from '@/components/ui/Spinner';
-import { QuickFilters } from '@/features/properties/components/quick_filters/QuickFiltersBar';
-import PropertiesClient from '@/features/properties/components/PropertiesClient';
-import { buildPropertyFilterParams } from '@/features/properties/utils/queryParams';
+import { PropertyListItem } from '@/entities/property/model';
+import { Spinner } from '@/shared/ui';
+import PropertiesListClient from '@/features/properties/list/ui/PropertiesListClient';
+import { buildPropertyFilterParams } from '@/features/properties/list/utils/queryParams';
+import { QuickFilters } from '@/features/properties/list/ui/quick_filters/QuickFiltersBar';
 
 export default async function PropertiesPage({
   searchParams,
@@ -58,7 +58,9 @@ export default async function PropertiesPage({
       </p>
 
       <div className="mb-4 flex flex-wrap justify-between gap-2">
-        <QuickFilters />
+        <Suspense fallback={null}>
+          <QuickFilters />
+        </Suspense>
         {initialData && !initialError && (
           <p className="text-text-muted mb-4 text-sm">
             {initialData.totalCount}+ properties found.
@@ -82,7 +84,7 @@ export default async function PropertiesPage({
               </div>
             }
           >
-            <PropertiesClient
+            <PropertiesListClient
               key={JSON.stringify(filterParams)}
               initialParams={filterParams}
               hasNextPageInitial={initialData.hasNextPage}

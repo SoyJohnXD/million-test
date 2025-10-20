@@ -1,13 +1,17 @@
 'use client';
+
+import {
+  PriceFilterValue,
+  useFilterParams,
+} from '@/features/properties/list/hooks/useFilterParams';
+import { useMemo } from 'react';
+import { XMarkIcon } from '@heroicons/react/24/outline';
+import { Button } from '@/shared/ui';
+import { formatShortPrice } from '@/utils/text';
+import { UseFilterParams } from '@/features/properties/list/types/filters';
 import { FilterButton } from './FilterButton';
 import { PriceFilter } from './PriceFilter';
 import { CounterFilter } from './CounterFilter';
-import { useFilterParams } from '@/hooks/useFilterParams';
-import { useMemo } from 'react';
-import { XMarkIcon } from '@heroicons/react/24/outline';
-import { Button } from '@/components/ui/Button';
-import { UseFilterParams, PriceFilterValue } from '../../types/filters';
-import { formatShortPrice } from '@/utils/text';
 
 export function QuickFilters() {
   const { filters, updateFilter, clearFilter, clearAllFilters } =

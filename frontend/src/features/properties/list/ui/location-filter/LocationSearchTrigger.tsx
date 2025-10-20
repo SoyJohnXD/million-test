@@ -3,7 +3,7 @@
 import { useSearchParams } from 'next/navigation';
 import { MapPinIcon } from '@heroicons/react/24/outline';
 import { XMarkIcon } from '@heroicons/react/20/solid';
-import { useFilterParams } from '@/hooks/useFilterParams';
+import { useFilterParams } from '@/features/properties/list/hooks/useFilterParams';
 
 interface LocationSearchTriggerProps {
   onClick: () => void;

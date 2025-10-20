@@ -30,3 +30,10 @@ export interface PropertyFilterParams {
 }
 
 export type FilterKey = keyof PropertyFilterParams;
+
+export type NextFetchOptions = {
+  next?: {
+    revalidate?: number | false;
+    tags?: string[];
+  };
+};

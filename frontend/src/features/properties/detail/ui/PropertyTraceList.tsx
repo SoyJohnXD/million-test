@@ -1,4 +1,4 @@
-import { PropertyTrace } from '@/types/property';
+import { PropertyTrace } from '@/entities/property/model';
 import { formatCurrency } from '@/utils/text';
 
 interface PropertyTraceListProps {
@@ -13,7 +13,7 @@ export function PropertyTraceList({ traces }: PropertyTraceListProps) {
         month: 'short',
         day: 'numeric',
       }).format(new Date(dateString));
-    } catch (e) {
+    } catch {
       return 'Invalid Date';
     }
   };

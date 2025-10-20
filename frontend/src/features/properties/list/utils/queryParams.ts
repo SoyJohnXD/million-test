@@ -1,4 +1,4 @@
-import { PropertyFilterParams } from '@/shared/api/types';
+import { PropertyFilterParams } from '@/types/api';
 
 export const DEFAULT_PAGE_SIZE = 15;
 
