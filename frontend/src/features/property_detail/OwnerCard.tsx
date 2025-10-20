@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { OwnerDetail } from '@/types/owner';
 import { useState } from 'react';
 import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
 
 interface OwnerCardProps {
   owner: OwnerDetail;
@@ -18,7 +19,7 @@ export function OwnerCard({ owner }: OwnerCardProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Contact form submitted:', formData);
+    alert('Contact form submitted');
   };
 
   const handleChange = (
@@ -81,6 +82,9 @@ export function OwnerCard({ owner }: OwnerCardProps) {
             className="border-border bg-background text-text-primary placeholder:text-text-muted focus-visible:ring-primary/50 w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:outline-none"
           />
         </div>
+        <Button variant="primary" className="mt-4 w-full">
+          Contact Agent
+        </Button>
       </form>
     </div>
   );

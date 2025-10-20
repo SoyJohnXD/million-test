@@ -7,18 +7,7 @@ import { useMemo } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import { Button } from '@/components/ui/Button';
 import { UseFilterParams, PriceFilterValue } from '../../types/filters';
-
-const formatShortPrice = (value: number | null | undefined): string => {
-  if (!value) return '0';
-
-  if (value >= 1000000) {
-    return `${(value / 1000000).toFixed(1)}M`;
-  }
-  if (value >= 1000) {
-    return `${(value / 1000).toFixed(0)}K`;
-  }
-  return value.toString();
-};
+import { formatShortPrice } from '@/utils/text';
 
 export function QuickFilters() {
   const { filters, updateFilter, clearFilter, clearAllFilters } =

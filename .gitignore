@@ -49,6 +49,7 @@ node_modules/
 out/
 
 # Archivos de configuración local y secretos
+.env
 .env.local
 .env.*.local
 

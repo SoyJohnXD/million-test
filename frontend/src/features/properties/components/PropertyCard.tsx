@@ -3,7 +3,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { PropertyListItem } from '@/types/property';
 import { formatCurrency } from '@/utils/text';
-// import eliminado: optimización personalizada ya no se usa
 
 type PropertyCardProps = {
   property: PropertyListItem;

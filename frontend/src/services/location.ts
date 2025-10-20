@@ -9,7 +9,7 @@ export async function searchCities(query: string): Promise<CityResult[]> {
 
   const params = new URLSearchParams({
     q: query,
-    format: 'jsonv2', // versión recomendada
+    format: 'jsonv2',
     addressdetails: '1',
     limit: '5',
     class: 'place',

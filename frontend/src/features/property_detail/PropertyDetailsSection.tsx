@@ -1,9 +1,8 @@
-import { CalendarDaysIcon, TagIcon } from '@heroicons/react/24/outline'; // Example icons
+import { CalendarDaysIcon, TagIcon } from '@heroicons/react/24/outline';
 
 interface PropertyDetailsSectionProps {
   year: number;
   codeInternal: string;
-  // Add more props as needed (cooling, floor, amenities etc.)
 }
 
 export function PropertyDetailsSection({

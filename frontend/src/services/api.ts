@@ -1,12 +1,18 @@
 import { ApiResponse } from '@/types/api';
 
+type NextFetchOptions = {
+  next?: {
+    revalidate?: number | false;
+    tags?: string[];
+  };
+};
+
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080/api';
-// TODO: env var'http://backend:8080/api'
 
 export async function fetchApi<T>(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit & NextFetchOptions = {}
 ): Promise<T> {
   const url = `${API_BASE_URL}${endpoint}`;
 

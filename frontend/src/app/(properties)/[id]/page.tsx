@@ -7,7 +7,6 @@ import { PropertyDescription } from '@/features/property_detail/PropertyDescript
 import { PropertyDetailsSection } from '@/features/property_detail/PropertyDetailsSection';
 import { PropertyTraceList } from '@/features/property_detail/PropertyTraceList';
 import { OwnerCard } from '@/features/property_detail/OwnerCard';
-import { Button } from '@/components/ui/Button';
 import { BackButton } from '@/components/ui/BackButton';
 
 interface PropertyDetailPageProps {
@@ -76,10 +75,6 @@ export default async function PropertyDetailPage({
                     Owner information not available.
                   </p>
                 )}
-
-                <Button variant="primary" className="mt-6 w-full">
-                  Contact Agent
-                </Button>
               </div>
             </div>
           </div>
@@ -96,6 +91,6 @@ export async function generateMetadata({ params }: PropertyDetailPageProps) {
   }
   return {
     title: `${property.name} | Million Test`,
-    description: property.description.substring(0, 150) + '...', // Short description for SEO
+    description: property.description.substring(0, 150) + '...',
   };
 }

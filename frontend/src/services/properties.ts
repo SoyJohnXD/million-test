@@ -39,7 +39,9 @@ export async function getProperties(
 
   return fetchApi<PaginatedList<PropertyListItem>>(endpoint, {
     method: 'GET',
-    // TODO: cache: 'no-store',
+    next: {
+      revalidate: 60,
+    },
   });
 }
 
@@ -50,7 +52,9 @@ export async function getPropertyById(
   try {
     return await fetchApi<PropertyDetail>(endpoint, {
       method: 'GET',
-      // cache: 'no-store',
+      next: {
+        revalidate: 60,
+      },
     });
   } catch (error) {
     console.error(`Error fetching property ${id}:`, error);
