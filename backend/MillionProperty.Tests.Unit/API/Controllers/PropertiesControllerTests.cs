@@ -28,22 +28,24 @@ public class PropertiesControllerTests
         var query = new GetFilteredPropertiesQuery();
         var paginatedList = new PaginatedListDto<PropertyListDto>(new List<PropertyListDto>(), 0, 1, 10);
         
-        _mockMediator.Setup(m => m.Send(query, It.IsAny<CancellationToken>()))
+        _mockMediator
+            .Setup(m => m.Send(It.IsAny<GetFilteredPropertiesQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(paginatedList);
 
         var result = await _controller.GetProperties(query);
 
-        Assert.IsInstanceOf<OkObjectResult>(result, "El resultado debe ser un 200 OK.");
+    Assert.IsInstanceOf<OkObjectResult>(result, "The result should be 200 OK.");
         
-        var okResult = result as OkObjectResult;
-        Assert.IsNotNull(okResult.Value);
-        Assert.IsInstanceOf<ApiResponse<PaginatedListDto<PropertyListDto>>>(okResult.Value);
+    var okResult = result as OkObjectResult;
+    Assert.IsNotNull(okResult);
+    Assert.IsNotNull(okResult!.Value);
+    Assert.IsInstanceOf<ApiResponse<PaginatedListDto<PropertyListDto>>>(okResult.Value);
     }
 
     [Test]
     public async Task GetPropertyById_Should_ReturnOk200_WhenPropertyExists()
     {
-        var validId = "60c72b2f9b1e8a3a9c8b4567"; // Un ObjectId válido
+    var validId = "60c72b2f9b1e8a3a9c8b4567";
         var propertyDto = new PropertyDetailDto { IdProperty = validId, Name = "Test" };
 
         _mockMediator.Setup(m => m.Send(It.Is<GetPropertyByIdQuery>(q => q.Id == validId), It.IsAny<CancellationToken>()))
@@ -51,11 +53,13 @@ public class PropertiesControllerTests
 
         var result = await _controller.GetPropertyById(validId);
 
-        Assert.IsInstanceOf<OkObjectResult>(result, "El resultado debe ser un 200 OK.");
+    Assert.IsInstanceOf<OkObjectResult>(result, "The result should be 200 OK.");
 
-        var okResult = result as OkObjectResult;
-        var apiResponse = okResult.Value as ApiResponse<PropertyDetailDto>;
-        Assert.That(apiResponse.Content.IdProperty, Is.EqualTo(validId));
+    var okResult = result as OkObjectResult;
+    Assert.IsNotNull(okResult);
+    var apiResponse = okResult!.Value as ApiResponse<PropertyDetailDto>;
+    Assert.IsNotNull(apiResponse);
+    Assert.That(apiResponse!.Content!.IdProperty, Is.EqualTo(validId));
     }
 
     [Test]
@@ -68,17 +72,17 @@ public class PropertiesControllerTests
 
         var result = await _controller.GetPropertyById(notFoundId);
 
-        Assert.IsInstanceOf<NotFoundObjectResult>(result, "El resultado debe ser un 404 Not Found.");
+    Assert.IsInstanceOf<NotFoundObjectResult>(result, "The result should be 404 Not Found.");
     }
 
     [Test]
     public async Task GetPropertyById_Should_ReturnBadRequest400_WhenIdIsInvalid()
     {
-        var invalidId = "hola-mundo"; 
+    var invalidId = "hello-world"; 
 
         var result = await _controller.GetPropertyById(invalidId);
 
-        Assert.IsInstanceOf<BadRequestObjectResult>(result, "El resultado debe ser un 400 Bad Request.");
+    Assert.IsInstanceOf<BadRequestObjectResult>(result, "The result should be 400 Bad Request.");
         
         _mockMediator.Verify(m => m.Send(It.IsAny<GetPropertyByIdQuery>(), It.IsAny<CancellationToken>()), Times.Never);
     }

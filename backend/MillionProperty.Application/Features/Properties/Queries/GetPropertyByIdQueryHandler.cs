@@ -19,6 +19,11 @@ public class GetPropertyByIdQueryHandler : IRequestHandler<GetPropertyByIdQuery,
 
     public async Task<PropertyDetailDto?> Handle(GetPropertyByIdQuery request, CancellationToken cancellationToken)
     {
+        if (string.IsNullOrWhiteSpace(request.Id))
+        {
+            throw new ArgumentException("Property Id cannot be empty.", nameof(request.Id));
+        }
+
         var property = await _propertyRepo.GetByIdAsync(request.Id);
         if (property is null)
         {

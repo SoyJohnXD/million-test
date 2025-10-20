@@ -29,8 +29,8 @@ public class GetFilteredPropertiesQueryValidatorTests
         var result = _validator.TestValidate(query);
 
        
-        result.ShouldHaveValidationErrorFor(q => q.MinPrice)
-              .WithErrorMessage("Minimum price cannot be greater than maximum price.");
+      result.ShouldHaveValidationErrorFor(q => q.MinPrice)
+          .WithErrorMessage("Minimum price cannot be greater than maximum price.");
               
         result.ShouldNotHaveValidationErrorFor(q => q.Name);
     }
@@ -61,7 +61,57 @@ public class GetFilteredPropertiesQueryValidatorTests
 
         var result = _validator.TestValidate(query);
 
-        result.ShouldHaveValidationErrorFor(q => q.Name)
-              .WithErrorMessage("Name filter cannot exceed 50 characters.");
+      result.ShouldHaveValidationErrorFor(q => q.Name)
+          .WithErrorMessage("Name filter cannot exceed 50 characters.");
+    }
+    
+    [Test]
+    public void Handle_Should_HaveError_WhenBedroomsIsNegative()
+    {
+        var query = new GetFilteredPropertiesQuery { Bedrooms = -1 };
+
+        var result = _validator.TestValidate(query);
+
+      result.ShouldHaveValidationErrorFor(q => q.Bedrooms)
+          .WithErrorMessage("Bedrooms filter cannot be negative.");
+    }
+
+    [Test]
+    public void Handle_Should_HaveError_WhenBathroomsIsNegative()
+    {
+        var query = new GetFilteredPropertiesQuery { Bathrooms = -1 };
+
+        var result = _validator.TestValidate(query);
+
+      result.ShouldHaveValidationErrorFor(q => q.Bathrooms)
+          .WithErrorMessage("Bathrooms filter cannot be negative.");
+    }
+
+    [Test]
+    public void Handle_Should_HaveError_WhenMinYearIsGreaterThanCurrentYear()
+    {
+        var query = new GetFilteredPropertiesQuery
+        {
+            MinYear = DateTime.Now.Year + 1
+        };
+
+        var result = _validator.TestValidate(query);
+
+      result.ShouldHaveValidationErrorFor(q => q.MinYear)
+          .WithErrorMessage("Minimum year cannot be greater than current year.");
+    }
+
+    [Test]
+    public void Handle_Should_HaveError_WhenMinSquareMetersIsNegative()
+    {
+        var query = new GetFilteredPropertiesQuery
+        {
+            MinSquareMeters = -1
+        };
+
+        var result = _validator.TestValidate(query);
+
+      result.ShouldHaveValidationErrorFor(q => q.MinSquareMeters)
+          .WithErrorMessage("Minimum square meters cannot be negative.");
     }
 }

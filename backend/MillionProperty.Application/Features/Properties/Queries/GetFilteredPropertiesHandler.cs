@@ -39,7 +39,6 @@ public class GetFilteredPropertiesQueryHandler : IRequestHandler<GetFilteredProp
         
         if (properties.Any())
         {   
-           
             var ownerIds = properties.Select(p => p.IdOwner).Distinct();
             var owners = (await _ownerRepository.GetByIdsAsync(ownerIds))
                         .ToDictionary(o => o.IdOwner); 

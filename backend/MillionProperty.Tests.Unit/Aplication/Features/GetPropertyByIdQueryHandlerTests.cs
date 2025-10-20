@@ -49,16 +49,16 @@ public class GetPropertyByIdQueryHandlerTests
         var propertyId = "prop1";
         var ownerId = "owner1";
         
-        var fakeProperty = new Property { IdProperty = propertyId, IdOwner = ownerId, Name = "Casa Detalle" };
-        var fakeOwner = new Owner { IdOwner = ownerId, Name = "Dueño Detalle" };
+    var fakeProperty = new Property { IdProperty = propertyId, IdOwner = ownerId, Name = "Detail House" };
+    var fakeOwner = new Owner { IdOwner = ownerId, Name = "Detail Owner" };
         var fakeImages = new List<PropertyImage>
         {
-            new() { IdProperty = propertyId, File = "detalle1.jpg" },
-            new() { IdProperty = propertyId, File = "detalle2.jpg" }
+            new() { IdProperty = propertyId, File = "detail1.jpg" },
+            new() { IdProperty = propertyId, File = "detail2.jpg" }
         };
         var fakeTraces = new List<PropertyTrace>
         {
-            new() { IdProperty = propertyId, Name = "Venta Inicial", Value = 500000 }
+            new() { IdProperty = propertyId, Name = "Initial Sale", Value = 500000 }
         };
 
         var query = new GetPropertyByIdQuery { Id = propertyId };
@@ -77,10 +77,10 @@ public class GetPropertyByIdQueryHandlerTests
         Assert.That(result.Owner.Name, Is.EqualTo(fakeOwner.Name));
         
         Assert.That(result.ImageUrls.Count, Is.EqualTo(2));
-        Assert.That(result.ImageUrls[0], Is.EqualTo("detalle1.jpg"));
+    Assert.That(result.ImageUrls[0], Is.EqualTo("detail1.jpg"));
         
         Assert.That(result.Traces.Count, Is.EqualTo(1));
-        Assert.That(result.Traces[0].Name, Is.EqualTo("Venta Inicial"));
+    Assert.That(result.Traces[0].Name, Is.EqualTo("Initial Sale"));
 
         _mockPropertyRepo.Verify(repo => repo.GetByIdAsync(propertyId), Times.Once);
         _mockOwnerRepo.Verify(repo => repo.GetByIdAsync(ownerId), Times.Once);

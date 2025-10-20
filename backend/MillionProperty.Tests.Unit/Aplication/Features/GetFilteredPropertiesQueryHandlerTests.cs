@@ -46,13 +46,13 @@ public class GetFilteredPropertiesQueryHandlerTests
     {
         var fakeProperties = new List<Property>
         {
-            new() { IdProperty = "prop1", IdOwner = "owner1", Name = "Propiedad 1" },
-            new() { IdProperty = "prop2", IdOwner = "owner2", Name = "Propiedad 2" }
+            new() { IdProperty = "prop1", IdOwner = "owner1", Name = "Property 1" },
+            new() { IdProperty = "prop2", IdOwner = "owner2", Name = "Property 2" }
         };
         var fakeOwners = new List<Owner>
         {
-            new() { IdOwner = "owner1", Name = "Dueño Uno" },
-            new() { IdOwner = "owner2", Name = "Dueño Dos" }
+            new() { IdOwner = "owner1", Name = "Owner One" },
+            new() { IdOwner = "owner2", Name = "Owner Two" }
         };
         var fakeImage1 = new PropertyImage { IdProperty = "prop1", File = "url1.jpg" };
         var fakeImage2 = new PropertyImage { IdProperty = "prop2", File = "url2.jpg" };
@@ -60,7 +60,16 @@ public class GetFilteredPropertiesQueryHandlerTests
         var query = new GetFilteredPropertiesQuery { PageNumber = 1, PageSize = 10 };
 
         _mockPropertyRepo.Setup(repo => repo.GetByFiltersAsync(
-                It.IsAny<string>(), It.IsAny<string>(), It.IsAny<decimal?>(), It.IsAny<decimal?>(), 1, 10))
+                It.IsAny<string>(),              
+                It.IsAny<string>(),              
+                It.IsAny<decimal?>(),             
+                It.IsAny<decimal?>(),             
+                It.IsAny<int?>(),                 
+                It.IsAny<int?>(),                
+                It.IsAny<int?>(),                
+                It.IsAny<double?>(),             
+                It.Is<int>(p => p == 1),         
+                It.Is<int>(s => s == 10)))        
             .ReturnsAsync((fakeProperties, 2));
 
         _mockOwnerRepo.Setup(repo => repo.GetByIdsAsync(It.Is<IEnumerable<string>>(ids => ids.Contains("owner1") && ids.Contains("owner2"))))
@@ -76,15 +85,15 @@ public class GetFilteredPropertiesQueryHandlerTests
         Assert.That(result.Items.Count, Is.EqualTo(2));
         Assert.That(result.CurrentPage, Is.EqualTo(1));
 
-        Assert.That(result.Items[0].Name, Is.EqualTo("Propiedad 1"));
-        Assert.That(result.Items[0].Owner?.Name, Is.EqualTo("Dueño Uno"));
+    Assert.That(result.Items[0].Name, Is.EqualTo("Property 1"));
+    Assert.That(result.Items[0].Owner?.Name, Is.EqualTo("Owner One"));
         Assert.That(result.Items[0].ImageUrl, Is.EqualTo("url1.jpg"));
 
-        Assert.That(result.Items[1].Name, Is.EqualTo("Propiedad 2"));
-        Assert.That(result.Items[1].Owner?.Name, Is.EqualTo("Dueño Dos"));
+    Assert.That(result.Items[1].Name, Is.EqualTo("Property 2"));
+    Assert.That(result.Items[1].Owner?.Name, Is.EqualTo("Owner Two"));
         Assert.That(result.Items[1].ImageUrl, Is.EqualTo("url2.jpg"));
 
-        _mockOwnerRepo.Verify(repo => repo.GetByIdsAsync(It.IsAny<IEnumerable<string>>()), Times.Once, "El repositorio de dueños debe llamarse solo una vez.");
+    _mockOwnerRepo.Verify(repo => repo.GetByIdsAsync(It.IsAny<IEnumerable<string>>()), Times.Once, "The owner repository should be called only once.");
     }
     
     [Test]
@@ -94,7 +103,16 @@ public class GetFilteredPropertiesQueryHandlerTests
         var query = new GetFilteredPropertiesQuery { PageNumber = 1, PageSize = 10 };
 
         _mockPropertyRepo.Setup(repo => repo.GetByFiltersAsync(
-                It.IsAny<string>(), It.IsAny<string>(), It.IsAny<decimal?>(), It.IsAny<decimal?>(), 1, 10))
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<decimal?>(),
+                It.IsAny<decimal?>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                It.IsAny<double?>(),
+                It.Is<int>(p => p == 1),
+                It.Is<int>(s => s == 10)))
             .ReturnsAsync((emptyProperties, 0));
 
         var result = await _handler.Handle(query, CancellationToken.None);
@@ -103,7 +121,7 @@ public class GetFilteredPropertiesQueryHandlerTests
         Assert.That(result.TotalCount, Is.EqualTo(0));
         Assert.That(result.Items, Is.Empty);
 
-        _mockOwnerRepo.Verify(repo => repo.GetByIdsAsync(It.IsAny<IEnumerable<string>>()), Times.Never, "No se debe llamar al repositorio de dueños si no hay propiedades.");
-        _mockImageRepo.Verify(repo => repo.GetFirstEnabledImageByPropertyIdAsync(It.IsAny<string>()), Times.Never, "No se debe llamar al repositorio de imágenes si no hay propiedades.");
+    _mockOwnerRepo.Verify(repo => repo.GetByIdsAsync(It.IsAny<IEnumerable<string>>()), Times.Never, "The owner repository should not be called when there are no properties.");
+    _mockImageRepo.Verify(repo => repo.GetFirstEnabledImageByPropertyIdAsync(It.IsAny<string>()), Times.Never, "The image repository should not be called when there are no properties.");
     }
 }
