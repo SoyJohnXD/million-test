@@ -4,12 +4,6 @@ interface OptimizeImageOptions {
   quality?: number;
 }
 
-/**
- * Optimiza una URL de imagen agregando parámetros de compresión
- * @param url URL de la imagen original
- * @param options Opciones de optimización (width, height, quality)
- * @returns URL optimizada con parámetros de compresión
- */
 export function optimizeImageUrl(
   url: string,
   options: OptimizeImageOptions = {}

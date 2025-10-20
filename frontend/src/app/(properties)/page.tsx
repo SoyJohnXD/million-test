@@ -1,107 +1,46 @@
-'use client';
-
-import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { useInView } from 'react-intersection-observer';
-
+import { Suspense } from 'react';
 import { PropertyList } from '@/features/properties/components/PropertyList';
 import { getProperties } from '@/services/properties';
 import { PropertyListItem } from '@/types/property';
-import { PropertyFilterParams } from '@/types/api';
 import { Spinner } from '@/components/ui/Spinner';
 import { QuickFilters } from '@/features/properties/components/quick_filters/QuickFiltersBar';
+import PropertiesClient from '@/features/properties/components/PropertiesClient';
+import { buildPropertyFilterParams } from '@/features/properties/utils/queryParams';
 
-const PAGE_SIZE = 15;
-
-function PropertiesContent() {
-  const searchParams = useSearchParams();
-  const [properties, setProperties] = useState<PropertyListItem[]>([]);
-  const [page, setPage] = useState(1);
-  const [totalCount, setTotalCount] = useState(0);
-  const [hasNextPage, setHasNextPage] = useState(true);
-
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
-  const [isMoreLoading, setIsMoreLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const { ref } = useInView({
-    threshold: 0,
-    onChange: (inView) => {
-      if (inView) loadMoreProperties(inView);
-    },
+export default async function PropertiesPage({
+  searchParams,
+}: {
+  searchParams: Record<string, string | string[] | undefined>;
+}) {
+  const urlSearchParams = new URLSearchParams();
+  Object.entries(searchParams || {}).forEach(([key, value]) => {
+    if (Array.isArray(value)) {
+      value.forEach((v) => urlSearchParams.append(key, v));
+    } else if (value !== undefined) {
+      urlSearchParams.append(key, value);
+    }
   });
 
-  useEffect(() => {
-    const fetchProperties = async () => {
-      if (page > 1) {
-        setIsMoreLoading(true);
-      } else {
-        setIsInitialLoading(true);
-        setProperties([]);
-      }
-      setError(null);
+  const filterParams = buildPropertyFilterParams(urlSearchParams);
 
-      const params: PropertyFilterParams = {
-        name: searchParams.get('name'),
-        address: searchParams.get('address'),
-        minPrice: searchParams.has('minPrice')
-          ? Number(searchParams.get('minPrice'))
-          : null,
-        maxPrice: searchParams.has('maxPrice')
-          ? Number(searchParams.get('maxPrice'))
-          : null,
-        bedrooms: searchParams.has('bedrooms')
-          ? Number(searchParams.get('bedrooms'))
-          : null,
-        bathrooms: searchParams.has('bathrooms')
-          ? Number(searchParams.get('bathrooms'))
-          : null,
-        minYear: searchParams.has('year')
-          ? Number(searchParams.get('year'))
-          : null,
-        minSquareMeters: searchParams.has('sqm')
-          ? Number(searchParams.get('sqm'))
-          : null,
-        pageNumber: page,
-        pageSize: PAGE_SIZE,
-      };
+  let initialData: {
+    items: PropertyListItem[];
+    totalCount: number;
+    hasNextPage: boolean;
+  } | null = null;
+  let initialError: string | null = null;
 
-      Object.keys(params).forEach((key) => {
-        const typedKey = key as keyof PropertyFilterParams;
-        if (params[typedKey] === null || params[typedKey] === undefined) {
-          delete params[typedKey];
-        }
-      });
-
-      try {
-        const data = await getProperties(params);
-        setProperties((prev) =>
-          page === 1 ? data.items : [...prev, ...data.items]
-        );
-        setTotalCount(data.totalCount);
-        setHasNextPage(data.hasNextPage);
-      } catch (err) {
-        console.error('Failed to fetch properties:', err);
-        setError(
-          err instanceof Error
-            ? err.message
-            : 'An unknown error occurred while fetching properties.'
-        );
-        setProperties([]);
-      } finally {
-        setIsInitialLoading(false);
-        setIsMoreLoading(false);
-      }
+  try {
+    const data = await getProperties(filterParams);
+    initialData = {
+      items: data.items,
+      totalCount: data.totalCount,
+      hasNextPage: data.hasNextPage,
     };
-
-    fetchProperties();
-  }, [searchParams, page]);
-
-  const loadMoreProperties = (inView: boolean) => {
-    if (inView && hasNextPage && !isMoreLoading && !isInitialLoading) {
-      setPage((prevPage) => prevPage + 1);
-    }
-  };
+  } catch (err) {
+    initialError =
+      err instanceof Error ? err.message : 'Failed to load properties.';
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -117,54 +56,49 @@ function PropertiesContent() {
 
       <div className="mb-4 flex flex-wrap justify-between gap-2">
         <QuickFilters />
-        {!isInitialLoading && !error && (
+        {initialData && !initialError && (
           <p className="text-text-muted mb-4 text-sm">
-            {totalCount}+ properties found.
+            {initialData.totalCount}+ properties found.
           </p>
         )}
       </div>
 
-      {isInitialLoading && (
-        <div className="flex justify-center py-10">
-          <Spinner />
-        </div>
-      )}
-
-      {error && (
+      {initialError && (
         <p className="py-10 text-center text-red-600 dark:text-red-400">
-          Error loading properties: {error}
+          Error loading properties: {initialError}
         </p>
       )}
 
-      {!isInitialLoading && !error && properties.length > 0 && (
-        <PropertyList properties={properties} ref={ref} />
+      {!initialError && initialData && initialData.items.length > 0 && (
+        <>
+          <PropertyList properties={initialData.items} />
+          <Suspense
+            fallback={
+              <div className="flex justify-center py-6">
+                <Spinner />
+              </div>
+            }
+          >
+            <PropertiesClient
+              key={JSON.stringify(filterParams)}
+              initialParams={filterParams}
+              hasNextPageInitial={initialData.hasNextPage}
+            />
+          </Suspense>
+        </>
       )}
 
-      {isMoreLoading && (
-        <div className="flex justify-center py-6">
-          <Spinner />
-        </div>
-      )}
-
-      {!isInitialLoading && !error && properties.length === 0 && (
+      {!initialError && initialData && initialData.items.length === 0 && (
         <p className="text-text-muted py-10 text-center">
           No properties found matching your criteria.
         </p>
       )}
-    </div>
-  );
-}
 
-export default function PropertiesPage() {
-  return (
-    <Suspense
-      fallback={
-        <div className="flex justify-center py-20">
+      {!initialData && !initialError && (
+        <div className="flex justify-center py-10">
           <Spinner />
         </div>
-      }
-    >
-      <PropertiesContent />
-    </Suspense>
+      )}
+    </div>
   );
 }
