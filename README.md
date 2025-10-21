@@ -1,5 +1,7 @@
 # Million Test - Full Stack Real Estate Application
 
+![Vista previa](./assets/portrait_web.webp)
+
 ## Descripción del Proyecto
 
 Este repositorio contiene la solución completa de una aplicación full-stack para la gestión y visualización de propiedades inmobiliarias de lujo. El proyecto ha sido desarrollado como parte de una prueba técnica para demostrar capacidades avanzadas en arquitectura de software, desarrollo backend con .NET 8 y MongoDB, así como frontend moderno con Next.js 15 y React 19.
