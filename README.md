@@ -100,7 +100,6 @@ million-test/
 ### Infraestructura
 
 - **Docker & Docker Compose**: Contenedorización y orquestación
-- **Nginx** (opcional): Proxy reverso para producción
 
 ---
 
@@ -116,11 +115,11 @@ million-test/
 
 ```bash
 # Clonar el repositorio
-git clone <repository-url>
+git clone https://github.com/SoyJohnXD/million-test.git
 cd million-test
 
-# Iniciar todos los servicios
-docker-compose up -d
+# Iniciar todos los servicios (prod)
+docker compose -f docker-compose.prod.yml up --build
 
 # Verificar que los contenedores estén corriendo
 docker-compose ps

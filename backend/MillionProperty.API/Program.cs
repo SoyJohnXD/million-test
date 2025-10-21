@@ -9,7 +9,6 @@ builder.Services.AddValidatorsFromAssemblyContaining<GetFilteredPropertiesQueryV
 builder.Services.Configure<MongoDbSettings>(
     builder.Configuration.GetSection("MongoDbSettings"));
 
-
 builder.Services.AddSingleton<IPropertyRepository>(sp =>
 {
     var settings = sp.GetRequiredService<IOptions<MongoDbSettings>>();
@@ -59,7 +58,6 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Mappi
 
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -68,24 +66,18 @@ var app = builder.Build();
 
 app.UseMiddleware<GlobalExceptionHandler>();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 app.UseCors(MyAllowSpecificOrigins);
 app.UseAuthorization();
 app.MapControllers();
 
-if (app.Environment.IsDevelopment())
-{
     using var scope = app.Services.CreateScope();
     var settings = scope.ServiceProvider.GetRequiredService<IOptions<MongoDbSettings>>().Value;
     var client = new MongoClient(settings.ConnectionString);
     var database = client.GetDatabase(settings.DatabaseName);
     await MongoDbSeeder.SeedDataAsync(database);
-}
 
 app.Run();

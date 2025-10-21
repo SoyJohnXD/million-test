@@ -1,0 +1,60 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: MillionProperty.API/dockerfile
+      target: prod
+    image: million-backend:prod
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+      - MongoDbSettings__ConnectionString=mongodb://mongo:27017
+      - MongoDbSettings__DatabaseName=MillionPropertyDB
+      - CorsSettings__AllowedOrigins=http://localhost:3000
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: dockerfile
+      target: prod
+      args:
+        - NEXT_PUBLIC_API_BASE_URL=http://localhost:8080/api
+        - INTERNAL_API_BASE_URL=http://backend:8080/api
+    image: million-frontend:prod
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_BASE_URL=http://localhost:8080/api
+      - INTERNAL_API_BASE_URL=http://backend:8080/api
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - app-network
+
+  mongo:
+    image: mongo:8.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+    networks:
+      - app-network
+
+volumes:
+  mongo-data:
+
+networks:
+  app-network:
+    driver: bridge

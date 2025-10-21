@@ -1,3 +1,6 @@
+## =====================
+## Dev stage (hot reload)
+## =====================
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS dev
 WORKDIR /src
 
@@ -6,3 +9,27 @@ COPY . .
 EXPOSE 8080
 
 CMD ["dotnet", "watch", "--project", "MillionProperty.API/MillionProperty.API.csproj", "run", "--urls", "http://*:8080"]
+
+## =====================
+## Build & publish (prod)
+## =====================
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+COPY . .
+WORKDIR /src/MillionProperty.API
+
+RUN dotnet restore ../MillionProperty.sln \
+    && dotnet publish -c Release -o /app/publish --no-restore
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS prod
+WORKDIR /app
+
+ENV ASPNETCORE_URLS=http://+:8080 \
+    ASPNETCORE_ENVIRONMENT=Production
+
+EXPOSE 8080
+
+COPY --from=build /app/publish .
+
+ENTRYPOINT ["dotnet", "MillionProperty.API.dll"]
